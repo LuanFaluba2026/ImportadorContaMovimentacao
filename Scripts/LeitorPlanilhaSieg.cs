@@ -8,5 +8,6 @@ namespace ImportadorContaMovimentacao.Scripts
 {
     internal class LeitorPlanilhaSieg
     {
+        
     }
 }
