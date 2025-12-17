@@ -13,6 +13,8 @@ namespace ImportadorContaMovimentacao
 
             TrocarEmpresa();
 
+            contaDiversosTB.Text = Program.contaFornecedoresDiversos.ToString();
+            contaDiversosLB.Text = DBConfig.GetContasPassivas()?.FirstOrDefault(x => x.numConta == Program.contaFornecedoresDiversos)?.nomeConta ?? "*-- Não Encontrada.";
         }
 
         private void selectEmpresa_Click(object sender, EventArgs e)
@@ -39,6 +41,11 @@ namespace ImportadorContaMovimentacao
             {
                 sheetPath = ofd.FileName;
             }
+        }
+
+        private void BuscarContasPassivasBTTN_Click(object sender, EventArgs e)
+        {
+            Program.ConsultarContasPassivas();
         }
     }
 }

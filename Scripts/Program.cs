@@ -1,4 +1,5 @@
 using ImportadorContaMovimentacao.Forms;
+using ImportadorContaMovimentacao.Forms.Consultas;
 using ImportadorContaMovimentacao.Forms.Gerenciador_de_Empresas;
 
 namespace ImportadorContaMovimentacao.Scripts
@@ -10,6 +11,20 @@ namespace ImportadorContaMovimentacao.Scripts
         {
             MessageBox.Show("Erro: " + ex.Message, "Erro", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
         }
+
+        //Parametros
+        public static int contaFornecedoresDiversos = 59;
+
+        public static void AtualizarFornecedoresDiversos()
+        {
+
+        }
+        public static void ConsultarContasPassivas()
+        {
+            ConsultadorContasPassivas form = new();
+            form.ShowDialog();
+        }
+
         [STAThread]
         static void Main()
         {

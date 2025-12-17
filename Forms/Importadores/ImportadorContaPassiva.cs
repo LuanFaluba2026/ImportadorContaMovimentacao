@@ -42,6 +42,8 @@ namespace ImportadorContaMovimentacao.Forms
                 ImportarDominio();
             else if (!String.IsNullOrEmpty(path) && selectedSplit[2] == "S")
                 ImportarSenior();
+
+            MessageBox.Show("Importação concluída com sucesso.");
         }
         private void ImportarDominio()
         {
@@ -50,6 +52,7 @@ namespace ImportadorContaMovimentacao.Forms
                 var wb = new XLWorkbook(path);
                 var ws = wb.Worksheet(1);
 
+                Cursor.Current = Cursors.WaitCursor;
                 foreach(var row in ws.RowsUsed().Skip(1))
                 {
                     if(row.Cell("Q").Value.ToString() == "A")
@@ -66,8 +69,8 @@ namespace ImportadorContaMovimentacao.Forms
                         DBConfig.AddContas("ContasPassivas", conta);
                     }
                 }
-
-            }catch(Exception ex)
+            }
+            catch(Exception ex)
             {
                 Program.ShowError(ex);
             }

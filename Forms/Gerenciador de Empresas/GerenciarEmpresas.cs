@@ -88,10 +88,9 @@ namespace ImportadorContaMovimentacao.Forms
                     selecionouEmpresa = true;
 
                     selected = $"{num} - {nome} - {erp}";
-                    if (selected.Length > 20)
-                        selected = selected.Substring(0, 20).Insert(20, "...");
 
                     DBConfig.GerenciarCadastros();
+                    Program.AtualizarFornecedoresDiversos();
 
                     this.DialogResult = DialogResult.OK;
                     this.Close();
@@ -100,6 +99,7 @@ namespace ImportadorContaMovimentacao.Forms
             catch (Exception ex)
             {
                 Program.ShowError(ex);
+                throw new Exception(ex.Message);
             }
         }
     }

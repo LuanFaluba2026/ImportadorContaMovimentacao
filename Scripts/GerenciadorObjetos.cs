@@ -15,13 +15,13 @@ namespace ImportadorContaMovimentacao.Scripts
 
     public class ContaPassiva
     {
-        public int numConta { get; set; }
+        public long numConta { get; set; }
         public string? nomeConta { get; set; }
         public string? contaAnalitica { get; set; }
     }
     public class ContaAtiva
     {
-        public int numConta { get; set; }
+        public long numConta { get; set; }
         public string? nomeConta { get; set; }
         public string? contaAnalitica { get; set; }
     }

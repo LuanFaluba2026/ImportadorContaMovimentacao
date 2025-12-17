@@ -8,6 +8,7 @@ using System.Data.SQLite;
 using System.Diagnostics;
 using ImportadorContaMovimentacao.Forms;
 using SixLabors.Fonts;
+using System.Security.Cryptography;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
@@ -121,7 +122,7 @@ namespace ImportadorContaMovimentacao.Scripts
                     }
                     if (contas.Count == 0)
                         MostrarAviso("Banco não possuí nenhum cadastro das Contas Passivas. Deseja realizar uma importação?", 0);
-
+                    /*
                     contas.Clear();
                     cmd.CommandText = "SELECT * From ContasAtivas";
                     using (var reader = cmd.ExecuteReader())
@@ -132,7 +133,7 @@ namespace ImportadorContaMovimentacao.Scripts
                         }
                     }
                     if (contas.Count == 0)
-                        MostrarAviso("Banco não possuí nenhum cadastro das Contas Ativas. Deseja realizar uma importação?", 1);
+                        MostrarAviso("Banco não possuí nenhum cadastro das Contas Ativas. Deseja realizar uma importação?", 1);*/
 
                 }
             }catch(Exception ex)
@@ -155,6 +156,64 @@ namespace ImportadorContaMovimentacao.Scripts
             }
             else
                 return;
+        }
+
+        public static List<ContaPassiva> GetContasPassivas()
+        {
+            List<ContaPassiva> list = new();
+            try
+            {
+                using(var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM ContasPassivas";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new ContaPassiva()
+                            {
+                                numConta = (long)reader["numConta"],
+                                nomeConta = reader["nomeConta"].ToString(),
+                                contaAnalitica = reader["contaAnalitica"].ToString()
+                            });
+                        }
+                        return list;
+                    }
+                }
+            }catch(Exception ex)
+            {
+                Program.ShowError(ex);
+                throw new Exception(ex.Message);
+            }
+        }
+        public static List<ContaPassiva> GetContasAtivas()
+        {
+            List<ContaPassiva> list = new();
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM ContasAtivas";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new ContaPassiva()
+                            {
+                                numConta = (int)reader["numConta"],
+                                nomeConta = reader["nomeConta"].ToString(),
+                                contaAnalitica = reader["contaAnalitica"].ToString()
+                            });
+                        }
+                        return list;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.ShowError(ex);
+                throw new Exception(ex.Message);
+            }
         }
     }
 }

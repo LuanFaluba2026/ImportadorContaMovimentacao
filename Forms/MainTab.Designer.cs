@@ -38,6 +38,12 @@
             label3 = new Label();
             empresaLB = new Label();
             selectPathBTTN = new Button();
+            panel1 = new Panel();
+            contaDiversosTB = new TextBox();
+            BuscarContasPassivasBTTN = new Button();
+            contaDiversosLB = new Label();
+            label4 = new Label();
+            label5 = new Label();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)movGridView).BeginInit();
             SuspendLayout();
@@ -48,12 +54,12 @@
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.Controls.Add(movGridView, 0, 0);
-            tableLayoutPanel1.Location = new Point(212, 45);
+            tableLayoutPanel1.Location = new Point(215, 45);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
             tableLayoutPanel1.RowStyles.Add(new RowStyle(SizeType.Absolute, 20F));
-            tableLayoutPanel1.Size = new Size(1235, 567);
+            tableLayoutPanel1.Size = new Size(1283, 567);
             tableLayoutPanel1.TabIndex = 0;
             // 
             // movGridView
@@ -62,7 +68,7 @@
             movGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             movGridView.Location = new Point(3, 3);
             movGridView.Name = "movGridView";
-            movGridView.Size = new Size(1229, 561);
+            movGridView.Size = new Size(1277, 561);
             movGridView.TabIndex = 0;
             // 
             // label1
@@ -80,23 +86,23 @@
             // 
             label2.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
             label2.AutoSize = true;
-            label2.Location = new Point(12, 27);
+            label2.Location = new Point(12, 45);
             label2.Name = "label2";
-            label2.Size = new Size(104, 15);
+            label2.Size = new Size(102, 15);
             label2.TabIndex = 2;
-            label2.Text = "Caminho Planilha:";
+            label2.Text = "Processar Planilha";
             label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // pathTB
             // 
-            pathTB.Location = new Point(12, 45);
+            pathTB.Location = new Point(12, 63);
             pathTB.Name = "pathTB";
             pathTB.Size = new Size(161, 23);
             pathTB.TabIndex = 3;
             // 
             // importarMovBTTN
             // 
-            importarMovBTTN.Location = new Point(12, 74);
+            importarMovBTTN.Location = new Point(9, 92);
             importarMovBTTN.Name = "importarMovBTTN";
             importarMovBTTN.Size = new Size(194, 35);
             importarMovBTTN.TabIndex = 5;
@@ -128,18 +134,18 @@
             // empresaLB
             // 
             empresaLB.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            empresaLB.AutoSize = true;
+            empresaLB.AutoEllipsis = true;
             empresaLB.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
             empresaLB.Location = new Point(48, 592);
             empresaLB.Name = "empresaLB";
             empresaLB.Size = new Size(147, 15);
             empresaLB.TabIndex = 8;
             empresaLB.Text = "xxxxxxxxxxxxxxxxxxxx";
-            empresaLB.TextAlign = ContentAlignment.MiddleCenter;
+            empresaLB.TextAlign = ContentAlignment.MiddleLeft;
             // 
             // selectPathBTTN
             // 
-            selectPathBTTN.Location = new Point(179, 45);
+            selectPathBTTN.Location = new Point(176, 63);
             selectPathBTTN.Name = "selectPathBTTN";
             selectPathBTTN.Size = new Size(27, 23);
             selectPathBTTN.TabIndex = 9;
@@ -147,18 +153,77 @@
             selectPathBTTN.UseVisualStyleBackColor = true;
             selectPathBTTN.Click += selectPathBTTN_Click;
             // 
+            // panel1
+            // 
+            panel1.BorderStyle = BorderStyle.FixedSingle;
+            panel1.Location = new Point(4, 136);
+            panel1.Name = "panel1";
+            panel1.Size = new Size(205, 3);
+            panel1.TabIndex = 10;
+            // 
+            // contaDiversosTB
+            // 
+            contaDiversosTB.Location = new Point(45, 192);
+            contaDiversosTB.Name = "contaDiversosTB";
+            contaDiversosTB.Size = new Size(44, 23);
+            contaDiversosTB.TabIndex = 11;
+            // 
+            // BuscarContasPassivasBTTN
+            // 
+            BuscarContasPassivasBTTN.Location = new Point(12, 192);
+            BuscarContasPassivasBTTN.Name = "BuscarContasPassivasBTTN";
+            BuscarContasPassivasBTTN.Size = new Size(27, 23);
+            BuscarContasPassivasBTTN.TabIndex = 12;
+            BuscarContasPassivasBTTN.Text = "...";
+            BuscarContasPassivasBTTN.UseVisualStyleBackColor = true;
+            BuscarContasPassivasBTTN.Click += BuscarContasPassivasBTTN_Click;
+            // 
+            // contaDiversosLB
+            // 
+            contaDiversosLB.AutoEllipsis = true;
+            contaDiversosLB.Location = new Point(95, 195);
+            contaDiversosLB.Name = "contaDiversosLB";
+            contaDiversosLB.Size = new Size(117, 15);
+            contaDiversosLB.TabIndex = 13;
+            contaDiversosLB.Text = "* Não Encontrado *";
+            contaDiversosLB.TextAlign = ContentAlignment.MiddleLeft;
+            // 
+            // label4
+            // 
+            label4.AutoSize = true;
+            label4.Location = new Point(12, 174);
+            label4.Name = "label4";
+            label4.Size = new Size(173, 15);
+            label4.TabIndex = 14;
+            label4.Text = "Conta \"Fornecedores Diversos\":";
+            // 
+            // label5
+            // 
+            label5.AutoSize = true;
+            label5.Location = new Point(69, 148);
+            label5.Name = "label5";
+            label5.Size = new Size(67, 15);
+            label5.TabIndex = 15;
+            label5.Text = "Parametros";
+            // 
             // MainTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1459, 624);
+            ClientSize = new Size(1510, 624);
+            Controls.Add(label5);
+            Controls.Add(label4);
+            Controls.Add(contaDiversosLB);
+            Controls.Add(BuscarContasPassivasBTTN);
+            Controls.Add(contaDiversosTB);
+            Controls.Add(label2);
             Controls.Add(selectPathBTTN);
+            Controls.Add(panel1);
+            Controls.Add(pathTB);
             Controls.Add(empresaLB);
+            Controls.Add(importarMovBTTN);
             Controls.Add(label3);
             Controls.Add(selectEmpresaBTTN);
-            Controls.Add(importarMovBTTN);
-            Controls.Add(pathTB);
-            Controls.Add(label2);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(label1);
             MinimumSize = new Size(800, 600);
@@ -184,5 +249,11 @@
         private Button selectEmpresaBTTN;
         private Label label3;
         private Label empresaLB;
+        private Panel panel1;
+        private TextBox contaDiversosTB;
+        private Button BuscarContasPassivasBTTN;
+        private Label contaDiversosLB;
+        private Label label4;
+        private Label label5;
     }
 }
