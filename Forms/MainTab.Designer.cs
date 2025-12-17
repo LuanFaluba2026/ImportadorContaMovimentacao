@@ -29,16 +29,17 @@
         private void InitializeComponent()
         {
             tableLayoutPanel1 = new TableLayoutPanel();
-            dataGridView1 = new DataGridView();
+            movGridView = new DataGridView();
             label1 = new Label();
             label2 = new Label();
-            textBox1 = new TextBox();
-            importarMov = new Button();
-            selectEmpresa = new Button();
+            pathTB = new TextBox();
+            importarMovBTTN = new Button();
+            selectEmpresaBTTN = new Button();
             label3 = new Label();
-            empresaText = new Label();
+            empresaLB = new Label();
+            selectPathBTTN = new Button();
             tableLayoutPanel1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)movGridView).BeginInit();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -46,7 +47,7 @@
             tableLayoutPanel1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             tableLayoutPanel1.ColumnCount = 1;
             tableLayoutPanel1.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
-            tableLayoutPanel1.Controls.Add(dataGridView1, 0, 0);
+            tableLayoutPanel1.Controls.Add(movGridView, 0, 0);
             tableLayoutPanel1.Location = new Point(212, 45);
             tableLayoutPanel1.Name = "tableLayoutPanel1";
             tableLayoutPanel1.RowCount = 1;
@@ -55,14 +56,14 @@
             tableLayoutPanel1.Size = new Size(1235, 567);
             tableLayoutPanel1.TabIndex = 0;
             // 
-            // dataGridView1
+            // movGridView
             // 
-            dataGridView1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
-            dataGridView1.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            dataGridView1.Location = new Point(3, 3);
-            dataGridView1.Name = "dataGridView1";
-            dataGridView1.Size = new Size(1229, 561);
-            dataGridView1.TabIndex = 0;
+            movGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
+            movGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            movGridView.Location = new Point(3, 3);
+            movGridView.Name = "movGridView";
+            movGridView.Size = new Size(1229, 561);
+            movGridView.TabIndex = 0;
             // 
             // label1
             // 
@@ -86,32 +87,32 @@
             label2.Text = "Caminho Planilha:";
             label2.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // textBox1
+            // pathTB
             // 
-            textBox1.Location = new Point(12, 45);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(161, 23);
-            textBox1.TabIndex = 3;
+            pathTB.Location = new Point(12, 45);
+            pathTB.Name = "pathTB";
+            pathTB.Size = new Size(161, 23);
+            pathTB.TabIndex = 3;
             // 
-            // importarMov
+            // importarMovBTTN
             // 
-            importarMov.Location = new Point(12, 74);
-            importarMov.Name = "importarMov";
-            importarMov.Size = new Size(194, 35);
-            importarMov.TabIndex = 5;
-            importarMov.Text = "Importar Movimentos";
-            importarMov.UseVisualStyleBackColor = true;
+            importarMovBTTN.Location = new Point(12, 74);
+            importarMovBTTN.Name = "importarMovBTTN";
+            importarMovBTTN.Size = new Size(194, 35);
+            importarMovBTTN.TabIndex = 5;
+            importarMovBTTN.Text = "Importar Movimentos";
+            importarMovBTTN.UseVisualStyleBackColor = true;
             // 
-            // selectEmpresa
+            // selectEmpresaBTTN
             // 
-            selectEmpresa.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            selectEmpresa.Location = new Point(12, 589);
-            selectEmpresa.Name = "selectEmpresa";
-            selectEmpresa.Size = new Size(30, 20);
-            selectEmpresa.TabIndex = 6;
-            selectEmpresa.Text = "...";
-            selectEmpresa.UseVisualStyleBackColor = true;
-            selectEmpresa.Click += selectEmpresa_Click;
+            selectEmpresaBTTN.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            selectEmpresaBTTN.Location = new Point(12, 589);
+            selectEmpresaBTTN.Name = "selectEmpresaBTTN";
+            selectEmpresaBTTN.Size = new Size(30, 20);
+            selectEmpresaBTTN.TabIndex = 6;
+            selectEmpresaBTTN.Text = "...";
+            selectEmpresaBTTN.UseVisualStyleBackColor = true;
+            selectEmpresaBTTN.Click += selectEmpresa_Click;
             // 
             // label3
             // 
@@ -124,28 +125,39 @@
             label3.Text = "Empresa Selecionada:";
             label3.TextAlign = ContentAlignment.MiddleCenter;
             // 
-            // empresaText
+            // empresaLB
             // 
-            empresaText.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
-            empresaText.AutoSize = true;
-            empresaText.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            empresaText.Location = new Point(48, 592);
-            empresaText.Name = "empresaText";
-            empresaText.Size = new Size(87, 15);
-            empresaText.TabIndex = 8;
-            empresaText.Text = "1072 - Plamev";
-            empresaText.TextAlign = ContentAlignment.MiddleCenter;
+            empresaLB.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            empresaLB.AutoSize = true;
+            empresaLB.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            empresaLB.Location = new Point(48, 592);
+            empresaLB.Name = "empresaLB";
+            empresaLB.Size = new Size(147, 15);
+            empresaLB.TabIndex = 8;
+            empresaLB.Text = "xxxxxxxxxxxxxxxxxxxx";
+            empresaLB.TextAlign = ContentAlignment.MiddleCenter;
+            // 
+            // selectPathBTTN
+            // 
+            selectPathBTTN.Location = new Point(179, 45);
+            selectPathBTTN.Name = "selectPathBTTN";
+            selectPathBTTN.Size = new Size(27, 23);
+            selectPathBTTN.TabIndex = 9;
+            selectPathBTTN.Text = "...";
+            selectPathBTTN.UseVisualStyleBackColor = true;
+            selectPathBTTN.Click += selectPathBTTN_Click;
             // 
             // MainTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1459, 624);
-            Controls.Add(empresaText);
+            Controls.Add(selectPathBTTN);
+            Controls.Add(empresaLB);
             Controls.Add(label3);
-            Controls.Add(selectEmpresa);
-            Controls.Add(importarMov);
-            Controls.Add(textBox1);
+            Controls.Add(selectEmpresaBTTN);
+            Controls.Add(importarMovBTTN);
+            Controls.Add(pathTB);
             Controls.Add(label2);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(label1);
@@ -154,9 +166,8 @@
             StartPosition = FormStartPosition.CenterScreen;
             Text = "Importador Contas e Movimentos";
             WindowState = FormWindowState.Maximized;
-            Load += MainTab_Load;
             tableLayoutPanel1.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)dataGridView1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)movGridView).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -164,14 +175,14 @@
         #endregion
 
         private TableLayoutPanel tableLayoutPanel1;
-        private DataGridView dataGridView1;
+        private DataGridView movGridView;
         private Label label1;
         private Label label2;
-        private TextBox textBox1;
-        private Button button1;
-        private Button importarMov;
-        private Button selectEmpresa;
+        private TextBox pathTB;
+        private Button selectPathBTTN;
+        private Button importarMovBTTN;
+        private Button selectEmpresaBTTN;
         private Label label3;
-        private Label empresaText;
+        private Label empresaLB;
     }
 }

@@ -13,7 +13,13 @@ namespace ImportadorContaMovimentacao.Scripts
         public char erpSelecionado { get; set; }
     }
 
-    public class ContasPassivas
+    public class ContaPassiva
+    {
+        public int numConta { get; set; }
+        public string? nomeConta { get; set; }
+        public string? contaAnalitica { get; set; }
+    }
+    public class ContaAtiva
     {
         public int numConta { get; set; }
         public string? nomeConta { get; set; }
@@ -22,8 +28,8 @@ namespace ImportadorContaMovimentacao.Scripts
     public class Movimentos
     { 
         public DateTime dataMovimento { get; set; }
-        public string? contaAtiva { get; set; }
-        public string? contaPassiva { get; set; }
+        public Dictionary<int, string>? contaAtiva { get; set; }
+        public Dictionary<int, string>? contaPassiva { get; set; }
         public double valorMovimento { get; set; }
         public string? historico { get; set; }
         public string? codigoEmpresa { get; set; }

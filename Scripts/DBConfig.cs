@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Data;
 using System.Data.SQLite;
 using System.Diagnostics;
+using ImportadorContaMovimentacao.Forms;
+using SixLabors.Fonts;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
@@ -74,11 +76,85 @@ namespace ImportadorContaMovimentacao.Scripts
                 {
                     cmd.CommandText = "CREATE TABLE IF NOT  EXISTS ContasPassivas (numConta INTEGER NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, PRIMARY KEY(numConta, nomeConta))";
                     cmd.ExecuteNonQuery();
+                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS ContasAtivas(numConta INTEGER NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, PRIMARY KEY(numConta, nomeConta))";
+                    cmd.ExecuteNonQuery();
                 }
             }catch(Exception ex)
             {
                 Program.ShowError(ex);
             }
+        }
+        public static void AddContas(string tabela, ContaPassiva conta)
+        {
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    if(!String.IsNullOrEmpty(tabela))
+                    {
+                        cmd.CommandText = $"INSERT OR IGNORE INTO {tabela}(numConta, nomeConta, contaAnalitica) VALUES (@NumConta, @NomeConta, @ContaAnalitica)";
+                        cmd.Parameters.AddWithValue("@NumConta", conta.numConta);
+                        cmd.Parameters.AddWithValue("@NomeConta", conta.nomeConta);
+                        cmd.Parameters.AddWithValue("@ContaAnalitica", conta.contaAnalitica);
+                        cmd.ExecuteNonQuery();
+                    }
+                }
+            }catch(Exception ex)
+            {
+                Program.ShowError(ex);
+            }
+        }
+        public static void GerenciarCadastros()
+        {
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    List<int> contas = new();
+                    cmd.CommandText = "SELECT * From ContasPassivas";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while(reader.Read())
+                        {
+                            contas.Add(Convert.ToInt32(reader["numConta"]));
+                        }
+                    }
+                    if (contas.Count == 0)
+                        MostrarAviso("Banco não possuí nenhum cadastro das Contas Passivas. Deseja realizar uma importação?", 0);
+
+                    contas.Clear();
+                    cmd.CommandText = "SELECT * From ContasAtivas";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            contas.Add(Convert.ToInt32(reader["numConta"]));
+                        }
+                    }
+                    if (contas.Count == 0)
+                        MostrarAviso("Banco não possuí nenhum cadastro das Contas Ativas. Deseja realizar uma importação?", 1);
+
+                }
+            }catch(Exception ex)
+            {
+                Program.ShowError(ex);
+            }
+        }
+        // 0 - Conta Passiva 1 - Conta Ativa
+        static void MostrarAviso(string msg, int tipo)
+        {
+            var msgBox = MessageBox.Show(msg, "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (msgBox == DialogResult.Yes && tipo == 0)
+            {
+                ImportadorContaPassiva form = new();
+                form.ShowDialog();
+            }else if(msgBox == DialogResult.Yes && tipo == 1)
+            {
+                ImportadorContaAtiva form = new();
+                form.ShowDialog();
+            }
+            else
+                return;
         }
     }
 }

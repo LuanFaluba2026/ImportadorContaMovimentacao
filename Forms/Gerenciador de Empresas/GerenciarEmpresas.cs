@@ -16,6 +16,7 @@ namespace ImportadorContaMovimentacao.Forms
     public partial class GerenciarEmpresas : Form
     {
         bool selecionouEmpresa = false;
+        public static string selected = "";
         public GerenciarEmpresas()
         {
             InitializeComponent();
@@ -40,6 +41,7 @@ namespace ImportadorContaMovimentacao.Forms
         {
             AdicionarEmpresa adcEmp = new AdicionarEmpresa();
             adcEmp.ShowDialog();
+            DBConfig.CriarTabela();
             ListarEmpresas();
         }
 
@@ -84,6 +86,14 @@ namespace ImportadorContaMovimentacao.Forms
                     var erp = empresasGV.SelectedRows[0].Cells["erpSelecionado"].Value.ToString();
                     DBConfig.dbPath = Path.Combine(Program.dbPath, $"{num}_{nome}_{erp}.sqlite");
                     selecionouEmpresa = true;
+
+                    selected = $"{num} - {nome} - {erp}";
+                    if (selected.Length > 20)
+                        selected = selected.Substring(0, 20).Insert(20, "...");
+
+                    DBConfig.GerenciarCadastros();
+
+                    this.DialogResult = DialogResult.OK;
                     this.Close();
                 }
             }
