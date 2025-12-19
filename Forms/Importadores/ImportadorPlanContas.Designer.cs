@@ -1,6 +1,6 @@
 ﻿namespace ImportadorContaMovimentacao.Forms
 {
-    partial class ImportadorContaPassiva
+    partial class ImportadorPlanContas
     {
         /// <summary>
         /// Required designer variable.

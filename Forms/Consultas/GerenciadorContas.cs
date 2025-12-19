@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace ImportadorContaMovimentacao.Forms.Consultas
 {
-    public partial class ConsultadorContasPassivas : Form
+    public partial class GerenciadorContas : Form
     {
-        public ConsultadorContasPassivas()
+        public GerenciadorContas()
         {
             InitializeComponent();
         }

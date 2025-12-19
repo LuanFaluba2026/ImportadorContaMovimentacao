@@ -75,9 +75,7 @@ namespace ImportadorContaMovimentacao.Scripts
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    cmd.CommandText = "CREATE TABLE IF NOT  EXISTS ContasPassivas (numConta INTEGER NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, PRIMARY KEY(numConta, nomeConta))";
-                    cmd.ExecuteNonQuery();
-                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS ContasAtivas(numConta INTEGER NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, PRIMARY KEY(numConta, nomeConta))";
+                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS Contas (id INTEGER PRIMARY KEY AUTOINCREMENT, numConta INTEGER NOT NULL, tipo TEXT NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, UNIQUE(numConta, nomeConta))";
                     cmd.ExecuteNonQuery();
                 }
             }catch(Exception ex)
@@ -85,94 +83,40 @@ namespace ImportadorContaMovimentacao.Scripts
                 Program.ShowError(ex);
             }
         }
-        public static void AddContas(string tabela, ContaPassiva conta)
+        public static void InsertContas(Conta conta)
         {
             try
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    if(!String.IsNullOrEmpty(tabela))
-                    {
-                        cmd.CommandText = $"INSERT OR IGNORE INTO {tabela}(numConta, nomeConta, contaAnalitica) VALUES (@NumConta, @NomeConta, @ContaAnalitica)";
-                        cmd.Parameters.AddWithValue("@NumConta", conta.numConta);
-                        cmd.Parameters.AddWithValue("@NomeConta", conta.nomeConta);
-                        cmd.Parameters.AddWithValue("@ContaAnalitica", conta.contaAnalitica);
-                        cmd.ExecuteNonQuery();
-                    }
+                    cmd.CommandText = $"INSERT OR IGNORE INTO Contas (numConta, tipo, nomeConta, contaAnalitica) VALUES (@NumConta, @Tipo, @NomeConta, @ContaAnalitica)";
+                    cmd.Parameters.AddWithValue("@NumConta", conta.numConta);
+                    cmd.Parameters.AddWithValue("@Tipo", conta.tipo);
+                    cmd.Parameters.AddWithValue("@NomeConta", conta.nomeConta);
+                    cmd.Parameters.AddWithValue("@ContaAnalitica", conta.contaAnalitica);
+                    cmd.ExecuteNonQuery();
                 }
             }catch(Exception ex)
             {
                 Program.ShowError(ex);
             }
         }
-        public static void GerenciarCadastros()
+        public static List<Conta> GetContas()
         {
-            try
-            {
-                using (var cmd = DbConnection().CreateCommand())
-                {
-                    List<int> contas = new();
-                    cmd.CommandText = "SELECT * From ContasPassivas";
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while(reader.Read())
-                        {
-                            contas.Add(Convert.ToInt32(reader["numConta"]));
-                        }
-                    }
-                    if (contas.Count == 0)
-                        MostrarAviso("Banco não possuí nenhum cadastro das Contas Passivas. Deseja realizar uma importação?", 0);
-                    /*
-                    contas.Clear();
-                    cmd.CommandText = "SELECT * From ContasAtivas";
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            contas.Add(Convert.ToInt32(reader["numConta"]));
-                        }
-                    }
-                    if (contas.Count == 0)
-                        MostrarAviso("Banco não possuí nenhum cadastro das Contas Ativas. Deseja realizar uma importação?", 1);*/
-
-                }
-            }catch(Exception ex)
-            {
-                Program.ShowError(ex);
-            }
-        }
-        // 0 - Conta Passiva 1 - Conta Ativa
-        static void MostrarAviso(string msg, int tipo)
-        {
-            var msgBox = MessageBox.Show(msg, "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-            if (msgBox == DialogResult.Yes && tipo == 0)
-            {
-                ImportadorContaPassiva form = new();
-                form.ShowDialog();
-            }else if(msgBox == DialogResult.Yes && tipo == 1)
-            {
-                ImportadorContaAtiva form = new();
-                form.ShowDialog();
-            }
-            else
-                return;
-        }
-
-        public static List<ContaPassiva> GetContasPassivas()
-        {
-            List<ContaPassiva> list = new();
+            List<Conta> list = new();
             try
             {
                 using(var cmd = DbConnection().CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM ContasPassivas";
+                    cmd.CommandText = "SELECT * FROM Contas";
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            list.Add(new ContaPassiva()
+                            list.Add(new Conta()
                             {
                                 numConta = (long)reader["numConta"],
+                                tipo = reader["tipo"].ToString(),
                                 nomeConta = reader["nomeConta"].ToString(),
                                 contaAnalitica = reader["contaAnalitica"].ToString()
                             });
@@ -181,35 +125,6 @@ namespace ImportadorContaMovimentacao.Scripts
                     }
                 }
             }catch(Exception ex)
-            {
-                Program.ShowError(ex);
-                throw new Exception(ex.Message);
-            }
-        }
-        public static List<ContaPassiva> GetContasAtivas()
-        {
-            List<ContaPassiva> list = new();
-            try
-            {
-                using (var cmd = DbConnection().CreateCommand())
-                {
-                    cmd.CommandText = "SELECT * FROM ContasAtivas";
-                    using (var reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            list.Add(new ContaPassiva()
-                            {
-                                numConta = (int)reader["numConta"],
-                                nomeConta = reader["nomeConta"].ToString(),
-                                contaAnalitica = reader["contaAnalitica"].ToString()
-                            });
-                        }
-                        return list;
-                    }
-                }
-            }
-            catch (Exception ex)
             {
                 Program.ShowError(ex);
                 throw new Exception(ex.Message);

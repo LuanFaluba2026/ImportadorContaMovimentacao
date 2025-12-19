@@ -14,11 +14,11 @@ using System.Windows.Forms;
 
 namespace ImportadorContaMovimentacao.Forms
 {
-    public partial class ImportadorContaPassiva : Form
+    public partial class ImportadorPlanContas : Form
     {
         string path = "";
         string selected = GerenciarEmpresas.selected;
-        public ImportadorContaPassiva()
+        public ImportadorPlanContas()
         {
             InitializeComponent();
             empresaLB.Text = selected;
@@ -27,7 +27,7 @@ namespace ImportadorContaMovimentacao.Forms
         private void selectPathBTTN_Click(object sender, EventArgs e)
         {
             OpenFileDialog ofd = new();
-            ofd.Filter = "Planilha de contas passívas. (*.xlsx) |*.xlsx";
+            ofd.Filter = "Planilha de Plano de Contas do Domínio. (*.xlsx) |*.xlsx| Planilha de Plano de Contas do Sênior. (*.csv) |*.csv";
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 path = ofd.FileName;
@@ -49,25 +49,37 @@ namespace ImportadorContaMovimentacao.Forms
         {
             try
             {
+                /* 
+                 * Relação Colunas:
+                 * Coluna N = Numero da Conta;
+                 * Coluna Q = Tipo da Conta;
+                 * Coluna P = Nome da Conta;
+                 * Coluna O = Classificação Analítica.
+                 */
+
                 var wb = new XLWorkbook(path);
                 var ws = wb.Worksheet(1);
 
                 Cursor.Current = Cursors.WaitCursor;
                 foreach(var row in ws.RowsUsed().Skip(1))
                 {
-                    if(row.Cell("Q").Value.ToString() == "A")
+                    string tipo = row.Cell("Q").Value.ToString();
+                    if (String.IsNullOrEmpty(tipo))
+                        continue;
+
+                    int num = (int)row.Cell("N").Value;
+                    string nome = row.Cell("P").Value.ToString();
+                    string contaAnalitica = row.Cell("O").Value.ToString();
+
+                    Conta conta = new Conta
                     {
-                        int num = (int)row.Cell("N").Value;
-                        string nome = row.Cell("P").Value.ToString();
-                        string contaAnalitica = row.Cell("O").Value.ToString();
-                        ContaPassiva conta = new ContaPassiva
-                        {
-                            numConta = num,
-                            nomeConta = nome,
-                            contaAnalitica = !String.IsNullOrEmpty(contaAnalitica) ? contaAnalitica : ""
-                        };
-                        DBConfig.AddContas("ContasPassivas", conta);
-                    }
+                        numConta = num,
+                        tipo = tipo,
+                        nomeConta = nome,
+                        contaAnalitica = !String.IsNullOrEmpty(contaAnalitica) ? contaAnalitica : ""
+                    };
+
+                    DBConfig.InsertContas(conta);
                 }
             }
             catch(Exception ex)

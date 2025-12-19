@@ -13,15 +13,15 @@ namespace ImportadorContaMovimentacao.Scripts
         }
 
         //Parametros
-        public static int contaFornecedoresDiversos = 59;
+        public static int contaFornecedoresDiversos;
 
         public static void AtualizarFornecedoresDiversos()
         {
 
         }
-        public static void ConsultarContasPassivas()
+        public static void GerenciarContas()
         {
-            ConsultadorContasPassivas form = new();
+            GerenciadorContas form = new();
             form.ShowDialog();
         }
 

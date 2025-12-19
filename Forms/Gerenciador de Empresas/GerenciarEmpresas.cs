@@ -89,7 +89,17 @@ namespace ImportadorContaMovimentacao.Forms
 
                     selected = $"{num} - {nome} - {erp}";
 
-                    DBConfig.GerenciarCadastros();
+                    var contas = DBConfig.GetContas().Count;
+                    if (contas == 0)
+                    {
+                        var msgBox = MessageBox.Show("Banco de Dados não possuí cadastro do plano de contas. Deseja realizar uma importação via Planilha?", "Aviso", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+                        if (msgBox == DialogResult.Yes)
+                        {
+                            ImportadorPlanContas form = new();
+                            form.ShowDialog();
+                        }
+                    }
+
                     Program.AtualizarFornecedoresDiversos();
 
                     this.DialogResult = DialogResult.OK;

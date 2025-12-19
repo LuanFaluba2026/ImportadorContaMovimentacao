@@ -13,23 +13,20 @@ namespace ImportadorContaMovimentacao.Scripts
         public char erpSelecionado { get; set; }
     }
 
-    public class ContaPassiva
+    public class Conta
     {
         public long numConta { get; set; }
-        public string? nomeConta { get; set; }
-        public string? contaAnalitica { get; set; }
-    }
-    public class ContaAtiva
-    {
-        public long numConta { get; set; }
+
+        // S - Conta Sintética. A - Conta Analítica.
+        public string? tipo { get; set; }
         public string? nomeConta { get; set; }
         public string? contaAnalitica { get; set; }
     }
     public class Movimentos
     { 
         public DateTime dataMovimento { get; set; }
-        public Dictionary<int, string>? contaAtiva { get; set; }
-        public Dictionary<int, string>? contaPassiva { get; set; }
+        public Dictionary<int, string>? contaDebito { get; set; }
+        public Dictionary<int, string>? contaCredito { get; set; }
         public double valorMovimento { get; set; }
         public string? historico { get; set; }
         public string? codigoEmpresa { get; set; }
