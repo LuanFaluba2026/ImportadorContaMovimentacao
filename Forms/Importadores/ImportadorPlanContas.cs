@@ -67,7 +67,7 @@ namespace ImportadorContaMovimentacao.Forms
                     if (String.IsNullOrEmpty(tipo))
                         continue;
 
-                    int num = (int)row.Cell("N").Value;
+                    string num = row.Cell("N").Value.ToString();
                     string nome = row.Cell("P").Value.ToString();
                     string contaAnalitica = row.Cell("O").Value.ToString();
 

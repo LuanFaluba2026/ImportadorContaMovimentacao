@@ -44,8 +44,12 @@
             contaDiversosLB = new Label();
             label4 = new Label();
             label5 = new Label();
+            menuStrip1 = new MenuStrip();
+            toolStripMenuItem1 = new ToolStripMenuItem();
+            contasCadastradasToolStripMenuItem = new ToolStripMenuItem();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)movGridView).BeginInit();
+            menuStrip1.SuspendLayout();
             SuspendLayout();
             // 
             // tableLayoutPanel1
@@ -206,6 +210,30 @@
             label5.TabIndex = 15;
             label5.Text = "Parametros";
             // 
+            // menuStrip1
+            // 
+            menuStrip1.Items.AddRange(new ToolStripItem[] { toolStripMenuItem1 });
+            menuStrip1.Location = new Point(0, 0);
+            menuStrip1.Name = "menuStrip1";
+            menuStrip1.RenderMode = ToolStripRenderMode.Professional;
+            menuStrip1.Size = new Size(1510, 24);
+            menuStrip1.TabIndex = 16;
+            menuStrip1.Text = "menuStrip1";
+            // 
+            // toolStripMenuItem1
+            // 
+            toolStripMenuItem1.DropDownItems.AddRange(new ToolStripItem[] { contasCadastradasToolStripMenuItem });
+            toolStripMenuItem1.Name = "toolStripMenuItem1";
+            toolStripMenuItem1.Size = new Size(94, 20);
+            toolStripMenuItem1.Text = "Gerenciadores";
+            // 
+            // contasCadastradasToolStripMenuItem
+            // 
+            contasCadastradasToolStripMenuItem.Name = "contasCadastradasToolStripMenuItem";
+            contasCadastradasToolStripMenuItem.Size = new Size(180, 22);
+            contasCadastradasToolStripMenuItem.Text = "Contas Cadastradas";
+            contasCadastradasToolStripMenuItem.Click += contasCadastradasToolStripMenuItem_Click;
+            // 
             // MainTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -226,6 +254,8 @@
             Controls.Add(selectEmpresaBTTN);
             Controls.Add(tableLayoutPanel1);
             Controls.Add(label1);
+            Controls.Add(menuStrip1);
+            MainMenuStrip = menuStrip1;
             MinimumSize = new Size(800, 600);
             Name = "MainTab";
             StartPosition = FormStartPosition.CenterScreen;
@@ -233,6 +263,8 @@
             WindowState = FormWindowState.Maximized;
             tableLayoutPanel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)movGridView).EndInit();
+            menuStrip1.ResumeLayout(false);
+            menuStrip1.PerformLayout();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -255,5 +287,8 @@
         private Label contaDiversosLB;
         private Label label4;
         private Label label5;
+        private MenuStrip menuStrip1;
+        private ToolStripMenuItem toolStripMenuItem1;
+        private ToolStripMenuItem contasCadastradasToolStripMenuItem;
     }
 }

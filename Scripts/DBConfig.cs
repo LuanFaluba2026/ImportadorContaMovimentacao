@@ -75,7 +75,7 @@ namespace ImportadorContaMovimentacao.Scripts
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS Contas (id INTEGER PRIMARY KEY AUTOINCREMENT, numConta INTEGER NOT NULL, tipo TEXT NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, UNIQUE(numConta, nomeConta))";
+                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS Contas (id INTEGER PRIMARY KEY AUTOINCREMENT, numConta TEXT NOT NULL, tipo TEXT NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, UNIQUE(numConta, nomeConta))";
                     cmd.ExecuteNonQuery();
                 }
             }catch(Exception ex)
@@ -115,7 +115,7 @@ namespace ImportadorContaMovimentacao.Scripts
                         {
                             list.Add(new Conta()
                             {
-                                numConta = (long)reader["numConta"],
+                                numConta = reader["numConta"].ToString(),
                                 tipo = reader["tipo"].ToString(),
                                 nomeConta = reader["nomeConta"].ToString(),
                                 contaAnalitica = reader["contaAnalitica"].ToString()

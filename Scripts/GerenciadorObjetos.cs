@@ -15,7 +15,7 @@ namespace ImportadorContaMovimentacao.Scripts
 
     public class Conta
     {
-        public long numConta { get; set; }
+        public string? numConta { get; set; }
 
         // S - Conta Sintética. A - Conta Analítica.
         public string? tipo { get; set; }
