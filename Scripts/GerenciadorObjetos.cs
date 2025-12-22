@@ -22,11 +22,12 @@ namespace ImportadorContaMovimentacao.Scripts
         public string? nomeConta { get; set; }
         public string? contaAnalitica { get; set; }
     }
-    public class Movimentos
+    public class Movimento
     { 
         public DateTime dataMovimento { get; set; }
-        public Dictionary<int, string>? contaDebito { get; set; }
-        public Dictionary<int, string>? contaCredito { get; set; }
+        public string? contaDebito { get; set; }
+        public string? contaCredito { get; set; }
+        public string? descricaoCredito { get; set; }
         public double valorMovimento { get; set; }
         public string? historico { get; set; }
         public string? codigoEmpresa { get; set; }
