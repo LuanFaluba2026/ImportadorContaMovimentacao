@@ -1,6 +1,7 @@
 using ImportadorContaMovimentacao.Forms;
 using ImportadorContaMovimentacao.Forms.Consultas;
 using ImportadorContaMovimentacao.Forms.Gerenciador_de_Empresas;
+using System.Data;
 using System.Runtime.CompilerServices;
 
 namespace ImportadorContaMovimentacao.Scripts
@@ -16,15 +17,12 @@ namespace ImportadorContaMovimentacao.Scripts
         //Parametros
         public static string contaFornecedoresDiversos;
 
+        public static string analiticoPassivos = "21";
         public static void AtualizarFornecedoresDiversos()
         {
-            contaFornecedoresDiversos = DBConfig.GetContas()?.FirstOrDefault(x => x.nomeConta.Contains("Fornecedores Diversos", StringComparison.OrdinalIgnoreCase) && x.tipo != "S")?.numConta ?? "";
-        }
-        public static void GerenciarContas()
-        {
-            GerenciadorContas form = new();
-            form.ChamarFiltro("21101");
-            form.ShowDialog();
+            Conta contaFornDiversos = DBConfig.GetContas()?.FirstOrDefault(x => x.nomeConta.Contains("Fornecedores Diversos", StringComparison.OrdinalIgnoreCase) && x.tipo != "S") ?? new Conta();
+            contaFornecedoresDiversos = contaFornDiversos.numConta;
+            analiticoPassivos = contaFornDiversos.contaAnalitica.Substring(0 ,5);
         }
 
         //Grids
@@ -34,6 +32,26 @@ namespace ImportadorContaMovimentacao.Scripts
             grid.AutoResizeColumns();
             grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             grid.Columns["nomeConta"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+        }
+        public static void MovGridViewConfig(DataGridView grid)
+        {
+            grid.AutoResizeColumns();
+            grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
+            grid.Columns["historico"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
+            grid.Columns["codigoEmpresa"].Visible = false;
+
+            DataGridViewButtonColumn btnContaCredito = new DataGridViewButtonColumn();
+            btnContaCredito.Name = "btnContaCredito";
+            btnContaCredito.HeaderText = "";
+            btnContaCredito.Text = "...";
+            btnContaCredito.FlatStyle = FlatStyle.Flat;
+            btnContaCredito.UseColumnTextForButtonValue = true;
+            btnContaCredito.Width = 24;
+
+            // adiciona logo após a coluna contaCredito
+            int index = grid.Columns["contaCredito"].Index;
+            if (!grid.Columns.Contains("btnContaCredito"))
+                grid.Columns.Insert(index, btnContaCredito);
         }
 
         [STAThread]

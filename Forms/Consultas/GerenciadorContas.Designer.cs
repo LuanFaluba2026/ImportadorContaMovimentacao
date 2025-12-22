@@ -53,6 +53,7 @@
             contasGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             contasGridView.Size = new Size(752, 526);
             contasGridView.TabIndex = 0;
+            contasGridView.CellDoubleClick += contasGridView_CellDoubleClick;
             contasGridView.CellFormatting += contasGridView_CellFormatting;
             // 
             // pesquisaTB

@@ -68,12 +68,20 @@
             // 
             // movGridView
             // 
+            movGridView.AllowUserToAddRows = false;
+            movGridView.AllowUserToDeleteRows = false;
+            movGridView.AllowUserToResizeRows = false;
             movGridView.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left | AnchorStyles.Right;
             movGridView.ColumnHeadersHeightSizeMode = DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             movGridView.Location = new Point(3, 3);
+            movGridView.MultiSelect = false;
             movGridView.Name = "movGridView";
+            movGridView.RowHeadersVisible = false;
+            movGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
             movGridView.Size = new Size(1277, 561);
             movGridView.TabIndex = 0;
+            movGridView.CellContentClick += movGridView_CellContentClick;
+            movGridView.CellFormatting += movGridView_CellFormatting;
             // 
             // label1
             // 
@@ -83,7 +91,7 @@
             label1.Name = "label1";
             label1.Size = new Size(200, 15);
             label1.TabIndex = 1;
-            label1.Text = "(F2) Preencher todos - (F3) Pesquisar";
+            label1.Text = "(F3) Preencher todos - (F4) Pesquisar";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label2
@@ -112,6 +120,7 @@
             importarMovBTTN.TabIndex = 5;
             importarMovBTTN.Text = "Importar Movimentos";
             importarMovBTTN.UseVisualStyleBackColor = true;
+            importarMovBTTN.Click += importarMovBTTN_Click;
             // 
             // selectEmpresaBTTN
             // 
@@ -230,7 +239,7 @@
             // contasCadastradasToolStripMenuItem
             // 
             contasCadastradasToolStripMenuItem.Name = "contasCadastradasToolStripMenuItem";
-            contasCadastradasToolStripMenuItem.Size = new Size(180, 22);
+            contasCadastradasToolStripMenuItem.Size = new Size(178, 22);
             contasCadastradasToolStripMenuItem.Text = "Contas Cadastradas";
             contasCadastradasToolStripMenuItem.Click += contasCadastradasToolStripMenuItem_Click;
             // 

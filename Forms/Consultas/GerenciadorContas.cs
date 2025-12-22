@@ -59,12 +59,12 @@ namespace ImportadorContaMovimentacao.Forms.Consultas
 
         private void pesquisaTB_TextChanged(object sender, EventArgs e)
         {
-            if(filtrarGrupoCB.Checked)
+            if (filtrarGrupoCB.Checked)
             {
-                switch(selecFiltroCMB.Text)
+                switch (selecFiltroCMB.Text)
                 {
                     case "numConta":
-                        ShowData(DBConfig.GetContas().Where(x => x.numConta.StartsWith(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase)&& x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
+                        ShowData(DBConfig.GetContas().Where(x => x.numConta.StartsWith(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase) && x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
                         break;
                     case "nomeConta":
                         ShowData(DBConfig.GetContas().Where(x => x.nomeConta.Contains(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase) && x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
@@ -73,15 +73,29 @@ namespace ImportadorContaMovimentacao.Forms.Consultas
             }
             else
             {
-                switch(selecFiltroCMB.Text)
-                { 
+                switch (selecFiltroCMB.Text)
+                {
                     case "numConta":
-                            ShowData(DBConfig.GetContas().Where(x => x.numConta.StartsWith(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase)).ToList());
+                        ShowData(DBConfig.GetContas().Where(x => x.numConta.StartsWith(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase)).ToList());
                         break;
                     case "nomeConta":
                         ShowData(DBConfig.GetContas().Where(x => x.nomeConta.Contains(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase)).ToList());
                         break;
                 }
+            }
+        }
+
+        public bool isClickable;
+        public string contaSelecionada { get; private set; }
+        private void contasGridView_CellDoubleClick(object sender, DataGridViewCellEventArgs e)
+        {
+            var clicked = contasGridView.Rows[e.RowIndex].Cells["numConta"].Value.ToString();
+            var tipo = contasGridView.Rows[e.RowIndex].Cells["tipo"].Value.ToString();
+            if (!String.IsNullOrEmpty(clicked) && isClickable && tipo != "S")
+            {
+                contaSelecionada = clicked;
+                this.DialogResult = DialogResult.OK;
+                this.Close();
             }
         }
     }
