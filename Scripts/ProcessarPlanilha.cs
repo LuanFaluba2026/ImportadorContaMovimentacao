@@ -1,14 +1,8 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Drawing.Charts;
 using ImportadorContaMovimentacao.Forms;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
@@ -18,7 +12,7 @@ namespace ImportadorContaMovimentacao.Scripts
         static readonly string[] irrelevantes = [
             "sa", "s a", "ltda", "me", "epp",
             "com", "comercio", "comercial",
-            "filial", "loja", "de", "e", "s/a", 
+            "filial", "loja", "de", "e", "s/a",
             "online", "alimentos", "distribuidora",
             "industria", "servicos", "eireli", "tecnologia",
             "distribuicao"
@@ -56,7 +50,7 @@ namespace ImportadorContaMovimentacao.Scripts
                 if (cTokens.Length == 0)
                     return false;
 
-                return cTokens.Count(t => pTokens.Contains(t)) >= (pTokens.Count() > 1  ? pTokens.Count() / 2 : 1);
+                return cTokens.Count(t => pTokens.Contains(t)) >= (pTokens.Count() > 1 ? pTokens.Count() / 2 : 1);
             }).ToList();
         }
 
@@ -78,11 +72,13 @@ namespace ImportadorContaMovimentacao.Scripts
                     //TRIM FORNECEDOR.
                     string fornecedorPlan = row.Cell("F").Value.ToString();
                     List<Conta> matchs = MatchFornecedor(Normalizar(fornecedorPlan), contas);
-                    string contaCred = matchs?.FirstOrDefault()?.numConta ?? Program.contaFornecedoresDiversos;
 
-                    string descricaoCred = contas?.FirstOrDefault(x => contaCred.Equals(x.numConta))?.nomeConta ?? "Conta Crédito não Encontrada";
-                    DateTime dataMov = DateTime.Parse(row.Cell("D").Value.ToString());
+                    string contaCred = matchs?.FirstOrDefault()?.numConta ?? Program.contaFornecedoresDiversos;
+                    string descricaoCred = contas?.FirstOrDefault(x => contaCred.Equals(x.numConta))?.nomeConta ?? " -** Não encontrada.";
                     string contaDeb = ""; //Ajustar conforme CFOP.
+                    string descricaoDeb = contas?.FirstOrDefault(x => contaDeb.Equals(x.numConta))?.nomeConta ?? " -** Não encontrada.";
+
+                    DateTime dataMov = DateTime.Parse(row.Cell("D").Value.ToString());
                     double vlrMov = (double)row.Cell("Q").Value;
                     string historico = $"VLR. REF. NF {numNota} {fornecedorPlan}";
                     string codEmpresa = GerenciarEmpresas.selected.Split(" - ")[0];
@@ -91,6 +87,7 @@ namespace ImportadorContaMovimentacao.Scripts
                     {
                         dataMovimento = dataMov,
                         contaDebito = contaDeb,
+                        descricaoDebito = descricaoDeb,
                         contaCredito = contaCred,
                         descricaoCredito = descricaoCred,
                         valorMovimento = vlrMov,
@@ -99,7 +96,8 @@ namespace ImportadorContaMovimentacao.Scripts
                     });
                 }
 
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Program.ShowError(ex);
             }

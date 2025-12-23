@@ -47,6 +47,7 @@
             menuStrip1 = new MenuStrip();
             toolStripMenuItem1 = new ToolStripMenuItem();
             contasCadastradasToolStripMenuItem = new ToolStripMenuItem();
+            button1 = new Button();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)movGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -81,7 +82,10 @@
             movGridView.Size = new Size(1277, 561);
             movGridView.TabIndex = 0;
             movGridView.CellContentClick += movGridView_CellContentClick;
+            movGridView.CellEnter += movGridView_CellEnter;
             movGridView.CellFormatting += movGridView_CellFormatting;
+            movGridView.CellValidated += movGridView_CellValidated;
+            movGridView.KeyDown += movGridView_KeyDown;
             // 
             // label1
             // 
@@ -89,9 +93,9 @@
             label1.AutoSize = true;
             label1.Location = new Point(215, 27);
             label1.Name = "label1";
-            label1.Size = new Size(200, 15);
+            label1.Size = new Size(196, 15);
             label1.TabIndex = 1;
-            label1.Text = "(F3) Preencher todos - (F4) Pesquisar";
+            label1.Text = "(F1) - Pesquisar. (F2) Aplicar a todos";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label2
@@ -243,11 +247,21 @@
             contasCadastradasToolStripMenuItem.Text = "Contas Cadastradas";
             contasCadastradasToolStripMenuItem.Click += contasCadastradasToolStripMenuItem_Click;
             // 
+            // button1
+            // 
+            button1.Location = new Point(26, 545);
+            button1.Name = "button1";
+            button1.Size = new Size(75, 23);
+            button1.TabIndex = 17;
+            button1.Text = "button1";
+            button1.UseVisualStyleBackColor = true;
+            // 
             // MainTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1510, 624);
+            Controls.Add(button1);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(contaDiversosLB);
@@ -299,5 +313,6 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem contasCadastradasToolStripMenuItem;
+        private Button button1;
     }
 }

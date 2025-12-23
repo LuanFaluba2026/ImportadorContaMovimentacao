@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace ImportadorContaMovimentacao.Scripts
+﻿namespace ImportadorContaMovimentacao.Scripts
 {
     public class EmpresasCadastradas
     {
@@ -23,9 +17,10 @@ namespace ImportadorContaMovimentacao.Scripts
         public string? contaAnalitica { get; set; }
     }
     public class Movimento
-    { 
+    {
         public DateTime dataMovimento { get; set; }
         public string? contaDebito { get; set; }
+        public string? descricaoDebito { get; set; }
         public string? contaCredito { get; set; }
         public string? descricaoCredito { get; set; }
         public double valorMovimento { get; set; }

@@ -1,15 +1,5 @@
 ﻿using ImportadorContaMovimentacao.Forms.Gerenciador_de_Empresas;
 using ImportadorContaMovimentacao.Scripts;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Diagnostics;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ImportadorContaMovimentacao.Forms
 {
@@ -33,7 +23,7 @@ namespace ImportadorContaMovimentacao.Forms
 
         private void GerenciarEmpresas_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if(e.CloseReason == CloseReason.UserClosing && !selecionouEmpresa)
+            if (e.CloseReason == CloseReason.UserClosing && !selecionouEmpresa)
                 Application.Exit();
         }
 

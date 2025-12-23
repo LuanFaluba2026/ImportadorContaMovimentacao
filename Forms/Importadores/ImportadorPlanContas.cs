@@ -1,16 +1,5 @@
 ﻿using ClosedXML.Excel;
-using DocumentFormat.OpenXml.Office.SpreadSheetML.Y2023.MsForms;
-using DocumentFormat.OpenXml.Spreadsheet;
 using ImportadorContaMovimentacao.Scripts;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace ImportadorContaMovimentacao.Forms
 {
@@ -61,7 +50,7 @@ namespace ImportadorContaMovimentacao.Forms
                 var ws = wb.Worksheet(1);
 
                 Cursor.Current = Cursors.WaitCursor;
-                foreach(var row in ws.RowsUsed().Skip(1))
+                foreach (var row in ws.RowsUsed().Skip(1))
                 {
                     string tipo = row.Cell("Q").Value.ToString();
                     if (String.IsNullOrEmpty(tipo))
@@ -82,7 +71,7 @@ namespace ImportadorContaMovimentacao.Forms
                     DBConfig.InsertContas(conta);
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Program.ShowError(ex);
             }

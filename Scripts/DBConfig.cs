@@ -1,14 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data;
-using System.Data.SQLite;
+﻿using System.Data.SQLite;
 using System.Diagnostics;
-using ImportadorContaMovimentacao.Forms;
-using SixLabors.Fonts;
-using System.Security.Cryptography;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
@@ -31,7 +22,7 @@ namespace ImportadorContaMovimentacao.Scripts
             for (int i = 0; i < files.Length; i++)
             {
                 string fileName = Path.GetFileNameWithoutExtension(files[i]);
-                string[] reg = fileName.Split('_'); 
+                string[] reg = fileName.Split('_');
                 empresas.Add(new EmpresasCadastradas
                 {
                     numEmpresa = reg[0],
@@ -59,12 +50,14 @@ namespace ImportadorContaMovimentacao.Scripts
         }
         public static void RemoverBanco(EmpresasCadastradas empresa)
         {
-            try{
+            try
+            {
                 string path = Path.Combine(Program.dbPath, $"{empresa.numEmpresa}_{empresa.nomeEmpresa}_{empresa.erpSelecionado}.sqlite");
                 Debug.WriteLine(path);
                 if (File.Exists(path))
                     File.Delete(path);
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Program.ShowError(ex);
             }
@@ -78,7 +71,8 @@ namespace ImportadorContaMovimentacao.Scripts
                     cmd.CommandText = "CREATE TABLE IF NOT EXISTS Contas (id INTEGER PRIMARY KEY AUTOINCREMENT, numConta TEXT NOT NULL, tipo TEXT NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, UNIQUE(numConta, nomeConta))";
                     cmd.ExecuteNonQuery();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Program.ShowError(ex);
             }
@@ -96,7 +90,8 @@ namespace ImportadorContaMovimentacao.Scripts
                     cmd.Parameters.AddWithValue("@ContaAnalitica", conta.contaAnalitica);
                     cmd.ExecuteNonQuery();
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Program.ShowError(ex);
             }
@@ -106,7 +101,7 @@ namespace ImportadorContaMovimentacao.Scripts
             List<Conta> list = new();
             try
             {
-                using(var cmd = DbConnection().CreateCommand())
+                using (var cmd = DbConnection().CreateCommand())
                 {
                     cmd.CommandText = "SELECT * FROM Contas";
                     using (var reader = cmd.ExecuteReader())
@@ -124,7 +119,8 @@ namespace ImportadorContaMovimentacao.Scripts
                         return list;
                     }
                 }
-            }catch(Exception ex)
+            }
+            catch (Exception ex)
             {
                 Program.ShowError(ex);
                 throw new Exception(ex.Message);

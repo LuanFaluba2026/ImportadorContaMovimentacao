@@ -1,8 +1,6 @@
-using DocumentFormat.OpenXml.Office2016.Drawing.Command;
 using ImportadorContaMovimentacao.Forms;
 using ImportadorContaMovimentacao.Forms.Consultas;
 using ImportadorContaMovimentacao.Scripts;
-using System.Diagnostics;
 
 namespace ImportadorContaMovimentacao
 {
@@ -11,6 +9,8 @@ namespace ImportadorContaMovimentacao
         public MainTab()
         {
             InitializeComponent();
+
+            this.KeyPreview = true;
 
             TrocarEmpresa();
             MostrarFornecedorDiv();
@@ -96,6 +96,11 @@ namespace ImportadorContaMovimentacao
                 movGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.LightYellow;
                 e.CellStyle.Font = new Font(movGridView.Font, FontStyle.Bold);
             }
+            if (String.IsNullOrEmpty(movGridView.Rows[e.RowIndex].Cells["contaDebito"].Value.ToString()))
+            {
+                movGridView.Rows[e.RowIndex].Cells["contaDebito"].Style.BackColor = Color.LightSalmon;
+                movGridView.Rows[e.RowIndex].Cells["descricaoDebito"].Style.BackColor = Color.LightSalmon;
+            }
         }
 
         private void movGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
@@ -118,6 +123,132 @@ namespace ImportadorContaMovimentacao
                     }
                 }
             }
+            else if (movGridView.Columns[e.ColumnIndex].Name == "btnContaDebito")
+            {
+                using (var frm = new ConsultaSimplificada())
+                {
+                    frm.isClickable = true;
+                    frm.filtroAnalitico = Program.analiticoDespesas;
+                    frm.filtroCB = 1;
+                    if (frm.ShowDialog() == DialogResult.OK)
+                    {
+                        movsProcessados[e.RowIndex].contaDebito = frm.contaSelecionada.numConta;
+                        movsProcessados[e.RowIndex].descricaoDebito = frm.contaSelecionada.nomeConta;
+                        movGridView.Rows[e.RowIndex].Cells["contaDebito"].Style.BackColor = Color.Empty;
+                        movGridView.Rows[e.RowIndex].Cells["descricaoDebito"].Style.BackColor = Color.Empty;
+                        MostrarElementosGrid();
+                    }
+                }
+            }
         }
+
+        private void movGridView_KeyDown(object sender, KeyEventArgs e)
+        {
+            //f1 - puxa pesquisa simplificada das células
+            if (e.KeyCode == Keys.F1)
+            {
+                var cell = movGridView.CurrentCell;
+
+                if (movGridView.Columns[cell.ColumnIndex].Name == "contaCredito")
+                {
+                    using (var frm = new ConsultaSimplificada())
+                    {
+                        frm.isClickable = true;
+                        frm.filtroAnalitico = Program.analiticoPassivos;
+                        frm.filtroCB = 1;
+                        if (frm.ShowDialog() == DialogResult.OK)
+                        {
+                            movsProcessados[cell.RowIndex].contaCredito = frm.contaSelecionada.numConta;
+                            movsProcessados[cell.RowIndex].descricaoCredito = frm.contaSelecionada.nomeConta;
+                            movGridView.Rows[cell.RowIndex].DefaultCellStyle.BackColor = Color.White;
+                            MostrarElementosGrid();
+                        }
+                    }
+                }
+                else if (movGridView.Columns[cell.ColumnIndex].Name == "contaDebito")
+                {
+                    using (var frm = new ConsultaSimplificada())
+                    {
+                        frm.isClickable = true;
+                        frm.filtroAnalitico = Program.analiticoDespesas;
+                        frm.filtroCB = 1;
+                        if (frm.ShowDialog() == DialogResult.OK)
+                        {
+                            movsProcessados[cell.RowIndex].contaDebito = frm.contaSelecionada.numConta;
+                            movsProcessados[cell.RowIndex].descricaoDebito = frm.contaSelecionada.nomeConta;
+                            movGridView.Rows[cell.RowIndex].Cells["contaDebito"].Style.BackColor = Color.Empty;
+                            movGridView.Rows[cell.RowIndex].Cells["descricaoDebito"].Style.BackColor = Color.Empty;
+                            MostrarElementosGrid();
+                        }
+                    }
+                }
+            }
+            //f3 - faz com que o conteúdo da celula selecionada se aplique para todas as outras de baixo
+            if (e.KeyCode == Keys.F2)
+            {
+                var cell = movGridView.CurrentCell;
+                int index = cell.RowIndex;
+                foreach (DataGridViewRow row in movGridView.Rows)
+                {
+                    if (row.Index > index)
+                    {
+                        switch (movGridView.Columns[cell.ColumnIndex].Name)
+                        {
+                            case "dataMovimento":
+                                movsProcessados[cell.RowIndex].dataMovimento = DateTime.Parse(cell.Value.ToString());
+                                break;
+                            case "contaDebito":
+                                movsProcessados[cell.RowIndex].contaDebito = cell.Value.ToString();
+                                movsProcessados[row.Index].descricaoDebito = DBConfig.GetContas()?.FirstOrDefault(x => x.numConta.Equals(cell.Value))?.nomeConta ?? " -** Não encontrada.";
+                                movGridView.Rows[row.Index].Cells["contaDebito"].Style.BackColor = Color.Empty;
+                                movGridView.Rows[row.Index].Cells["descricaoDebito"].Style.BackColor = Color.Empty;
+                                break;
+                            case "contaCredito":
+                                movsProcessados[cell.RowIndex].contaCredito = cell.Value.ToString();
+                                movsProcessados[row.Index].descricaoCredito = DBConfig.GetContas()?.FirstOrDefault(x => x.numConta.Equals(cell.Value))?.nomeConta ?? " -** Não encontrada.";
+                                movGridView.Rows[row.Index].DefaultCellStyle.BackColor = Color.White;
+                                break;
+                            case "valorMovimento":
+                                movsProcessados[cell.RowIndex].valorMovimento = (double)cell.Value;
+                                break;
+                            case "historico":
+                                movsProcessados[cell.RowIndex].historico = cell.Value.ToString();
+                                break;
+                        }
+
+                        row.Cells[cell.ColumnIndex].Value = cell.Value;
+                    }
+                }
+                MostrarElementosGrid();
+            }
+        }
+        //Preencher descrição
+
+        string? cellValue;
+        private void movGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
+        {
+            cellValue = movGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
+        }
+        private void movGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
+        {
+            var validatedCell = movGridView.Rows[e.RowIndex].Cells[e.ColumnIndex];
+
+            if (cellValue == validatedCell.Value.ToString()) return;
+
+            if (validatedCell.OwningColumn.Name == "contaDebito")
+            {
+                movsProcessados[validatedCell.RowIndex].descricaoDebito = DBConfig.GetContas()?.FirstOrDefault(x => x.numConta.Equals(validatedCell.Value))?.nomeConta ?? " -** Não encontrada.";
+                movGridView.Rows[validatedCell.RowIndex].Cells["contaDebito"].Style.BackColor = Color.Empty;
+                movGridView.Rows[validatedCell.RowIndex].Cells["descricaoDebito"].Style.BackColor = Color.Empty;
+                MostrarElementosGrid();
+            }
+            else if (validatedCell.OwningColumn.Name == "contaCredito")
+            {
+                movsProcessados[validatedCell.RowIndex].descricaoCredito = DBConfig.GetContas()?.FirstOrDefault(x => x.numConta.Equals(validatedCell.Value))?.nomeConta ?? " -** Não encontrada.";
+                movGridView.Rows[validatedCell.RowIndex].DefaultCellStyle.BackColor = Color.White;
+                MostrarElementosGrid();
+            }
+        }
+
     }
 }

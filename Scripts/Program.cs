@@ -1,9 +1,3 @@
-using ImportadorContaMovimentacao.Forms;
-using ImportadorContaMovimentacao.Forms.Consultas;
-using ImportadorContaMovimentacao.Forms.Gerenciador_de_Empresas;
-using System.Data;
-using System.Runtime.CompilerServices;
-
 namespace ImportadorContaMovimentacao.Scripts
 {
     internal static class Program
@@ -15,14 +9,15 @@ namespace ImportadorContaMovimentacao.Scripts
         }
 
         //Parametros
-        public static string contaFornecedoresDiversos;
+        public static string? contaFornecedoresDiversos;
 
         public static string analiticoPassivos = "21";
+        public static string? analiticoDespesas;
         public static void AtualizarFornecedoresDiversos()
         {
             Conta contaFornDiversos = DBConfig.GetContas()?.FirstOrDefault(x => x.nomeConta.Contains("Fornecedores Diversos", StringComparison.OrdinalIgnoreCase) && x.tipo != "S") ?? new Conta();
             contaFornecedoresDiversos = contaFornDiversos.numConta;
-            analiticoPassivos = contaFornDiversos.contaAnalitica.Substring(0 ,5);
+            analiticoPassivos = contaFornDiversos.contaAnalitica.Substring(0, 5);
         }
 
         //Grids
@@ -40,6 +35,7 @@ namespace ImportadorContaMovimentacao.Scripts
             grid.Columns["historico"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             grid.Columns["codigoEmpresa"].Visible = false;
 
+            //Adiciona botão Conta Crédito
             DataGridViewButtonColumn btnContaCredito = new DataGridViewButtonColumn();
             btnContaCredito.Name = "btnContaCredito";
             btnContaCredito.HeaderText = "";
@@ -48,10 +44,22 @@ namespace ImportadorContaMovimentacao.Scripts
             btnContaCredito.UseColumnTextForButtonValue = true;
             btnContaCredito.Width = 24;
 
-            // adiciona logo após a coluna contaCredito
-            int index = grid.Columns["contaCredito"].Index;
+            int credIndex = grid.Columns["contaCredito"].Index;
             if (!grid.Columns.Contains("btnContaCredito"))
-                grid.Columns.Insert(index, btnContaCredito);
+                grid.Columns.Insert(credIndex, btnContaCredito);
+
+            //Adiciona botão Conta Débito.
+            DataGridViewButtonColumn btnContaDebito = new DataGridViewButtonColumn();
+            btnContaDebito.Name = "btnContaDebito";
+            btnContaDebito.HeaderText = "";
+            btnContaDebito.Text = "...";
+            btnContaDebito.FlatStyle = FlatStyle.Flat;
+            btnContaDebito.UseColumnTextForButtonValue = true;
+            btnContaDebito.Width = 24;
+
+            int debIndex = grid.Columns["contaDebito"].Index;
+            if (!grid.Columns.Contains("btnContaDebito"))
+                grid.Columns.Insert(debIndex, btnContaDebito);
         }
 
         [STAThread]
