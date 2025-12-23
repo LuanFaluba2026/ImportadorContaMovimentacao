@@ -47,7 +47,6 @@
             menuStrip1 = new MenuStrip();
             toolStripMenuItem1 = new ToolStripMenuItem();
             contasCadastradasToolStripMenuItem = new ToolStripMenuItem();
-            button1 = new Button();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)movGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -247,21 +246,11 @@
             contasCadastradasToolStripMenuItem.Text = "Contas Cadastradas";
             contasCadastradasToolStripMenuItem.Click += contasCadastradasToolStripMenuItem_Click;
             // 
-            // button1
-            // 
-            button1.Location = new Point(26, 545);
-            button1.Name = "button1";
-            button1.Size = new Size(75, 23);
-            button1.TabIndex = 17;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
-            // 
             // MainTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1510, 624);
-            Controls.Add(button1);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(contaDiversosLB);
@@ -313,6 +302,5 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem contasCadastradasToolStripMenuItem;
-        private Button button1;
     }
 }

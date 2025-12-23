@@ -70,9 +70,30 @@ namespace ImportadorContaMovimentacao.Scripts
                 {
                     cmd.CommandText = "CREATE TABLE IF NOT EXISTS Contas (id INTEGER PRIMARY KEY AUTOINCREMENT, numConta TEXT NOT NULL, tipo TEXT NOT NULL, nomeConta TEXT NOT NULL, contaAnalitica TEXT, UNIQUE(numConta, nomeConta))";
                     cmd.ExecuteNonQuery();
+                    cmd.CommandText = "CREATE TABLE IF NOT EXISTS Fornecedores (id INTEGER PRIMARY KEY AUTOINCREMENT, cnpj TEXT NOT NULL, nome TEXT NOT NULL, contaDebito TEXT, contaCredito TEXT, UNIQUE(cnpj))";
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)
+            {
+                Program.ShowError(ex);
+            }
+        }
+        public static void InsertFornecedores(Fornecedores forn)
+        {
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "INSERT OR IGNORE INTO Fornecedores (cnpj, nome, contaDebito, contaCredito) VALUES (@Cnpj, @Nome, @ContaDebito, @ContaCredito)";
+                    cmd.Parameters.AddWithValue("@Cnpj", forn.cnpj);
+                    cmd.Parameters.AddWithValue("@Nome", forn.nome);
+                    cmd.Parameters.AddWithValue("@ContaDebito", forn.contaDebito);
+                    cmd.Parameters.AddWithValue("@ContaCredito", forn.contaCredito);
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch(Exception ex)
             {
                 Program.ShowError(ex);
             }

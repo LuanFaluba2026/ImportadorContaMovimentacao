@@ -44,6 +44,7 @@
             dadosGridView.Location = new Point(12, 12);
             dadosGridView.MultiSelect = false;
             dadosGridView.Name = "dadosGridView";
+            dadosGridView.ReadOnly = true;
             dadosGridView.RowHeadersVisible = false;
             dadosGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
             dadosGridView.Size = new Size(424, 573);

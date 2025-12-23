@@ -94,6 +94,13 @@ namespace ImportadorContaMovimentacao.Scripts
                         historico = historico,
                         codigoEmpresa = codEmpresa
                     });
+
+                    //Adicionar fornecedor ao banco:
+                    DBConfig.InsertFornecedores(new Fornecedores()
+                    {
+                        cnpj = row.Cell("E").Value.ToString(),
+                        nome = fornecedorPlan
+                    });
                 }
 
             }

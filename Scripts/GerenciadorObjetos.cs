@@ -16,6 +16,13 @@
         public string? nomeConta { get; set; }
         public string? contaAnalitica { get; set; }
     }
+    public class Fornecedores
+    {
+        public string? cnpj { get; set; }
+        public string? nome { get; set; }
+        public string? contaCredito { get; set; }
+        public string? contaDebito { get; set; }
+    }
     public class Movimento
     {
         public DateTime dataMovimento { get; set; }
