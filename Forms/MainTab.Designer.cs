@@ -47,6 +47,7 @@
             menuStrip1 = new MenuStrip();
             toolStripMenuItem1 = new ToolStripMenuItem();
             contasCadastradasToolStripMenuItem = new ToolStripMenuItem();
+            ProcessarBTTN = new Button();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)movGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -246,6 +247,17 @@
             contasCadastradasToolStripMenuItem.Text = "Contas Cadastradas";
             contasCadastradasToolStripMenuItem.Click += contasCadastradasToolStripMenuItem_Click;
             // 
+            // ProcessarBTTN
+            // 
+            ProcessarBTTN.Anchor = AnchorStyles.Bottom | AnchorStyles.Left;
+            ProcessarBTTN.Location = new Point(9, 533);
+            ProcessarBTTN.Name = "ProcessarBTTN";
+            ProcessarBTTN.Size = new Size(194, 35);
+            ProcessarBTTN.TabIndex = 5;
+            ProcessarBTTN.Text = "Processar";
+            ProcessarBTTN.UseVisualStyleBackColor = true;
+            ProcessarBTTN.Click += ProcessarBTTN_Click;
+            // 
             // MainTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
@@ -261,6 +273,7 @@
             Controls.Add(panel1);
             Controls.Add(pathTB);
             Controls.Add(empresaLB);
+            Controls.Add(ProcessarBTTN);
             Controls.Add(importarMovBTTN);
             Controls.Add(label3);
             Controls.Add(selectEmpresaBTTN);
@@ -302,5 +315,6 @@
         private MenuStrip menuStrip1;
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem contasCadastradasToolStripMenuItem;
+        private Button ProcessarBTTN;
     }
 }

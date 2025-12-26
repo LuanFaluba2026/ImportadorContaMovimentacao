@@ -1,6 +1,7 @@
 using ImportadorContaMovimentacao.Forms;
 using ImportadorContaMovimentacao.Forms.Consultas;
 using ImportadorContaMovimentacao.Scripts;
+using System.Security.Policy;
 
 namespace ImportadorContaMovimentacao
 {
@@ -45,7 +46,7 @@ namespace ImportadorContaMovimentacao
         }
         private void MostrarFornecedorDiv()
         {
-            contaDiversosTB.Text = Program.contaFornecedoresDiversos.ToString();
+            contaDiversosTB.Text = Program.contaFornecedoresDiversos.ToString() ?? "";
             contaDiversosLB.Text = DBConfig.GetContas()?.FirstOrDefault(x => x.numConta == Program.contaFornecedoresDiversos)?.nomeConta ?? "*-- Não Encontrada.";
         }
 
@@ -100,6 +101,17 @@ namespace ImportadorContaMovimentacao
             {
                 movGridView.Rows[e.RowIndex].Cells["contaDebito"].Style.BackColor = Color.LightSalmon;
                 movGridView.Rows[e.RowIndex].Cells["descricaoDebito"].Style.BackColor = Color.LightSalmon;
+            }
+
+            if (movGridView.Columns[e.ColumnIndex].Name == "cnpj" && e.Value != null)
+            {
+                string cnpj = new string(e.Value.ToString().Where(char.IsDigit).ToArray());
+
+                if (cnpj.Length == 14)
+                {
+                    e.Value = Convert.ToUInt64(cnpj).ToString(@"00\.000\.000\/0000\-00");
+                    e.FormattingApplied = true;
+                }
             }
         }
 
@@ -223,7 +235,6 @@ namespace ImportadorContaMovimentacao
             }
         }
         //Preencher descrição
-
         string? cellValue;
         private void movGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
@@ -249,6 +260,13 @@ namespace ImportadorContaMovimentacao
                 MostrarElementosGrid();
             }
         }
+
+        //Iniciar Processamento -
+
+        private void ProcessarBTTN_Click(object sender, EventArgs e)
+        {
+            GerarResultado.ProcessarMovimentos(movsProcessados);
+        } 
 
     }
 }

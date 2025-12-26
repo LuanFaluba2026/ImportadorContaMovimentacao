@@ -3,6 +3,7 @@ namespace ImportadorContaMovimentacao.Scripts
     internal static class Program
     {
         public static string dbPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "DbContas");
+        public static string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
         public static void ShowError(Exception ex)
         {
             MessageBox.Show("Erro: " + ex.Message, "Erro", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
@@ -34,6 +35,7 @@ namespace ImportadorContaMovimentacao.Scripts
             grid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.AllCells;
             grid.Columns["historico"].AutoSizeMode = DataGridViewAutoSizeColumnMode.Fill;
             grid.Columns["codigoEmpresa"].Visible = false;
+            grid.Columns["fornecedor"].Visible = false;
 
             //Adiciona botão Conta Crédito
             DataGridViewButtonColumn btnContaCredito = new DataGridViewButtonColumn();

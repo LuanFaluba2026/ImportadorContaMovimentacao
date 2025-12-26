@@ -79,7 +79,7 @@ namespace ImportadorContaMovimentacao.Scripts
                 Program.ShowError(ex);
             }
         }
-        public static void InsertFornecedores(Fornecedores forn)
+        public static void InsertFornecedores(Fornecedor forn)
         {
             try
             {
@@ -93,7 +93,7 @@ namespace ImportadorContaMovimentacao.Scripts
                     cmd.ExecuteNonQuery();
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 Program.ShowError(ex);
             }
@@ -139,6 +139,56 @@ namespace ImportadorContaMovimentacao.Scripts
                         }
                         return list;
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.ShowError(ex);
+                throw new Exception(ex.Message);
+            }
+        }
+        public static List<Fornecedor> GetFornecedores()
+        {
+            List<Fornecedor> list = new();
+            try
+            {
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "SELECT * FROM Fornecedores";
+                    using (var reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            list.Add(new Fornecedor()
+                            {
+                                ID = (long)reader["id"],
+                                cnpj = reader["cnpj"].ToString(),
+                                nome = reader["nome"].ToString(),
+                                contaCredito = reader["contaCredito"].ToString(),
+                                contaDebito = reader["contaDebito"].ToString()
+                            });
+                        }
+                        return list;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.ShowError(ex);
+                throw new Exception(ex.Message);
+            }
+        }
+        public static void UpdateFornecedor(Fornecedor forn)
+        {
+            try
+            {
+                using (var cmd = new SQLiteCommand(DbConnection()))
+                {
+                    cmd.CommandText = "UPDATE OR IGNORE Fornecedores SET contaCredito = @contaCredito, contaDebito = @contaDebito WHERE id=@id";
+                    cmd.Parameters.AddWithValue("@id", forn.ID);
+                    cmd.Parameters.AddWithValue("@contaCredito", forn.contaCredito);
+                    cmd.Parameters.AddWithValue("@contaDebito", forn.contaDebito);
+                    cmd.ExecuteNonQuery();
                 }
             }
             catch (Exception ex)

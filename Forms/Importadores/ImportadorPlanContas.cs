@@ -23,7 +23,6 @@ namespace ImportadorContaMovimentacao.Forms
                 pathTB.Text = path;
             }
         }
-
         private void importBTNN_Click(object sender, EventArgs e)
         {
             string[] selectedSplit = selected.Split(" - ");

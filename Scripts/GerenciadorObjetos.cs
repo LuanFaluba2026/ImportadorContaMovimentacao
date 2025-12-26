@@ -16,8 +16,9 @@
         public string? nomeConta { get; set; }
         public string? contaAnalitica { get; set; }
     }
-    public class Fornecedores
+    public class Fornecedor
     {
+        public long ID { get; set; }
         public string? cnpj { get; set; }
         public string? nome { get; set; }
         public string? contaCredito { get; set; }
@@ -33,5 +34,8 @@
         public double valorMovimento { get; set; }
         public string? historico { get; set; }
         public string? codigoEmpresa { get; set; }
+
+        public string? fornecedor { get; set; }
+        public string? cnpj { get; set; }
     }
 }

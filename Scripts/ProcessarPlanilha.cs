@@ -72,6 +72,7 @@ namespace ImportadorContaMovimentacao.Scripts
                     //TRIM FORNECEDOR.
                     string fornecedorPlan = row.Cell("F").Value.ToString();
                     List<Conta> matchs = MatchFornecedor(Normalizar(fornecedorPlan), contas);
+                    string cnpj = row.Cell("E").Value.ToString();
 
                     string contaCred = matchs?.FirstOrDefault()?.numConta ?? Program.contaFornecedoresDiversos;
                     string descricaoCred = contas?.FirstOrDefault(x => contaCred.Equals(x.numConta))?.nomeConta ?? " -** Não encontrada.";
@@ -92,13 +93,15 @@ namespace ImportadorContaMovimentacao.Scripts
                         descricaoCredito = descricaoCred,
                         valorMovimento = vlrMov,
                         historico = historico,
-                        codigoEmpresa = codEmpresa
+                        codigoEmpresa = codEmpresa,
+                        fornecedor = fornecedorPlan,
+                        cnpj = cnpj
                     });
 
                     //Adicionar fornecedor ao banco:
-                    DBConfig.InsertFornecedores(new Fornecedores()
+                    DBConfig.InsertFornecedores(new Fornecedor()
                     {
-                        cnpj = row.Cell("E").Value.ToString(),
+                        cnpj = cnpj,
                         nome = fornecedorPlan
                     });
                 }
