@@ -3,10 +3,18 @@ using ImportadorContaMovimentacao.Forms;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
+    public class FornecedorLigar
+    {
+        public long ID { get; set; }
+        public string? contaCredito { get; set; }
+        
+    }
     public static class GerarResultado
     {
         public static void ProcessarMovimentos(List<Movimento> movimentos)
         {
+            List<FornecedorLigar> forn = new();
+
             string[] empresa = GerenciarEmpresas.selected.Split(" - ");
             char sistema = char.Parse(empresa[2]);
 
@@ -39,22 +47,33 @@ namespace ImportadorContaMovimentacao.Scripts
                 }
 
                 //Ligação de Fornecedores:
-                Fornecedor fornecedor = DBConfig.GetFornecedores().FirstOrDefault(x => x.nome.Equals(movimentos[i].fornecedor)) ?? new Fornecedor();
-                
-                var requisitoLigação = MessageBox.Show("Deseja ligar os fornecedores atuais com suas respectivas contas?", "Atenção!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
-                if (requisitoLigação == DialogResult.Yes)
+                Fornecedor fornecedor = DBConfig.GetFornecedores().FirstOrDefault(x => x.cnpj.Equals(movimentos[i].cnpj)) ?? new Fornecedor();
+                forn.Add(new FornecedorLigar()
                 {
-                    DBConfig.UpdateFornecedor(new Fornecedor()
-                    {
-                        ID = fornecedor.ID,
-                        contaDebito = null,
-                        contaCredito = movimentos[i].contaCredito
-                    });
-                }
+                    ID = fornecedor.ID,
+                    contaCredito = movimentos[i].contaCredito
+                });
+                
             }
-
+            var requisitoLigacao = MessageBox.Show("Deseja ligar os fornecedores atuais com suas respectivas contas?", "Atenção!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (requisitoLigacao == DialogResult.Yes)
+                LigarFornecedores(forn);
+            
             string path = Path.Combine(Program.downloadsPath, $"Importar-Fornecedores{DateTime.Now.ToString("dd-MM-yy_hh-mm-ss")}.xlsx");
             wb.SaveAs(path);
+        }
+
+        public static void LigarFornecedores(List<FornecedorLigar> forns)
+        {
+            foreach(FornecedorLigar forn in forns)
+            {
+                DBConfig.UpdateFornecedor(new Fornecedor()
+                {
+                    ID = forn.ID,
+                    contaDebito = null,
+                    contaCredito = forn.contaCredito
+                });
+            }
         }
     }
 }
