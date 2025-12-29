@@ -2,6 +2,7 @@
 using ImportadorContaMovimentacao.Forms;
 using System.Diagnostics;
 using System.Globalization;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -14,42 +15,35 @@ namespace ImportadorContaMovimentacao.Scripts
     }
     public static class ProcessarPlanilha
     {
-        public static string Normalizar(string text) => text.ToLower().Replace(".", "");
+        public static string[] irrelevantes = [" com ", " prod ", " ind ", " de ", " e "];
+        public static string Normalizar(string text)
+        {
+            string newText = text.ToLower();
+            newText = newText.Replace(".", "").Replace("-", " ").Replace("/", "");
+            foreach (string x in irrelevantes)
+                newText = newText.Replace(x, " ");
+
+            return newText;
+        }
         public static string[] GetTokens(string text) => text.Split(" ");
         public static Conta MatchFornecedor(string forn, List<Conta> contas)
         {
-            Conta contaEscolhida = contas.First(x => x.numConta == Program.contaFornecedoresDiversos);
-
-            List<ContaMatch> contasSelecionadas = new();
-
-            foreach(Conta conta in contas)
+            string[] fornecedorTokens = GetTokens(Normalizar(forn));
+            var contaMatch = contas.Select(conta =>
             {
-                string[] contaTokens = GetTokens(Normalizar(conta.nomeConta ?? ""));
-                string[] fornecedorTokens = GetTokens(Normalizar(forn));
-                int tokensQuantity = contaTokens.Count();
-                foreach(string ct in contaTokens)
+                string norm = Normalizar(conta.nomeConta ?? "");
+                string[] contaTokens = GetTokens(norm);
+
+                int matches = contaTokens.Distinct(StringComparer.OrdinalIgnoreCase).Count(ct => fornecedorTokens.Contains(ct, StringComparer.OrdinalIgnoreCase));
+
+                return new ContaMatch
                 {
-                    int matchQuantity = fornecedorTokens.Where(x => x == ct).Count();
-                    if (matchQuantity == tokensQuantity)
-                    {
-                        contasSelecionadas.Add(new ContaMatch()
-                        {
-                            matchQuantity = matchQuantity,
-                            ContaSelecionada = contas.First(x => x.nomeConta == conta.nomeConta)
-                        });
-                    }
-                    else if (matchQuantity < tokensQuantity)
-                        tokensQuantity--;
-                    else if (matchQuantity == 0)
-                        break;
-                }
-            }
-            foreach(var conta in contasSelecionadas)
-            {
-                if(conta.matchQuantity > 1)
-                    Debug.WriteLine($"{conta.matchQuantity} - {conta.ContaSelecionada.nomeConta}");
-            }
-            return contaEscolhida;
+                    matchQuantity = matches,
+                    ContaSelecionada = conta
+                };
+            }).OrderByDescending(x => x.matchQuantity).FirstOrDefault();
+
+            return contaMatch?.matchQuantity > 1 ? contaMatch.ContaSelecionada : contas.First(x => x.numConta == Program.contaFornecedoresDiversos);
         }
         public static List<Movimento> ProcessarMovimentos(string path)
         {
@@ -70,6 +64,10 @@ namespace ImportadorContaMovimentacao.Scripts
                     string fornecedorPlan = row.Cell("F").Value.ToString();
                     Conta match = MatchFornecedor(fornecedorPlan, contas);
                     string cnpj = row.Cell("E").Value.ToString();
+
+                    var fornecedoresCadastrados = DBConfig.GetFornecedores().FirstOrDefault(x => x.cnpj.Equals(cnpj));
+                    if (fornecedoresCadastrados != null && !String.IsNullOrEmpty(fornecedoresCadastrados.contaCredito))
+                        match = DBConfig.GetContas().FirstOrDefault(x => x.numConta == fornecedoresCadastrados.contaCredito);
 
                     string contaCred = match.numConta;
                     string descricaoCred = match.nomeConta ?? " -** Não encontrada.";

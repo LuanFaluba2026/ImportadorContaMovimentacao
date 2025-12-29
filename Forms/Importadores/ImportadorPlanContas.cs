@@ -27,13 +27,13 @@ namespace ImportadorContaMovimentacao.Forms
         {
             string[] selectedSplit = selected.Split(" - ");
             if (!String.IsNullOrEmpty(path) && selectedSplit[2] == "D")
-                ImportarDominio();
+                Importar("Q", "N", "P", "O");
             else if (!String.IsNullOrEmpty(path) && selectedSplit[2] == "S")
-                ImportarSenior();
+                Importar("D", "B", "C", "A");
 
             MessageBox.Show("Importação concluída com sucesso.");
         }
-        private void ImportarDominio()
+        private void Importar(string colTipo, string colNum, string colNome, string colClass)
         {
             try
             {
@@ -51,13 +51,13 @@ namespace ImportadorContaMovimentacao.Forms
                 Cursor.Current = Cursors.WaitCursor;
                 foreach (var row in ws.RowsUsed().Skip(1))
                 {
-                    string tipo = row.Cell("Q").Value.ToString();
+                    string tipo = row.Cell(colTipo).Value.ToString();
                     if (String.IsNullOrEmpty(tipo))
                         continue;
 
-                    string num = row.Cell("N").Value.ToString();
-                    string nome = row.Cell("P").Value.ToString();
-                    string contaAnalitica = row.Cell("O").Value.ToString();
+                    string num = row.Cell(colNum).Value.ToString();
+                    string nome = row.Cell(colNome).Value.ToString();
+                    string contaAnalitica = row.Cell(colClass).Value.ToString();
 
                     Conta conta = new Conta
                     {
@@ -74,10 +74,6 @@ namespace ImportadorContaMovimentacao.Forms
             {
                 Program.ShowError(ex);
             }
-        }
-        private void ImportarSenior()
-        {
-
         }
     }
 }

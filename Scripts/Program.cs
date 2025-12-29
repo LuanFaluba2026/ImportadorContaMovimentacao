@@ -1,3 +1,5 @@
+using ImportadorContaMovimentacao.Forms;
+
 namespace ImportadorContaMovimentacao.Scripts
 {
     internal static class Program
@@ -16,9 +18,9 @@ namespace ImportadorContaMovimentacao.Scripts
         public static string? analiticoDespesas;
         public static void AtualizarFornecedoresDiversos()
         {
-            Conta contaFornDiversos = DBConfig.GetContas()?.FirstOrDefault(x => x.nomeConta.Contains("Fornecedores Diversos", StringComparison.OrdinalIgnoreCase) && x.tipo != "S") ?? new Conta();
+            Conta contaFornDiversos = DBConfig.GetContas()?.FirstOrDefault(x => x.nomeConta.Equals("Fornecedores Diversos", StringComparison.OrdinalIgnoreCase) && x.tipo != "S") ?? new Conta();
             contaFornecedoresDiversos = contaFornDiversos.numConta;
-            analiticoPassivos = contaFornDiversos.contaAnalitica.Substring(0, 5);
+            analiticoPassivos = contaFornDiversos.contaAnalitica.Substring(0, 6);
         }
 
         //Grids
@@ -64,6 +66,8 @@ namespace ImportadorContaMovimentacao.Scripts
                 grid.Columns.Insert(debIndex, btnContaDebito);
         }
 
+
+        public static bool Reiniciar = false;
         [STAThread]
         static void Main()
         {
@@ -73,10 +77,14 @@ namespace ImportadorContaMovimentacao.Scripts
                 Directory.CreateDirectory(dbPath);
             }
 
-            // To customize application configuration such as set high DPI settings or default font,
-            // see https://aka.ms/applicationconfiguration.
             ApplicationConfiguration.Initialize();
-            Application.Run(new MainTab());
+
+            do
+            {
+                Reiniciar = false;
+                Application.Run(new MainTab());
+            }
+            while (Reiniciar);
         }
     }
 }
