@@ -1,59 +1,56 @@
 ﻿using ClosedXML.Excel;
 using ImportadorContaMovimentacao.Forms;
+using System.Diagnostics;
 using System.Globalization;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
+    public class ContaMatch
+    {
+        public int matchQuantity { get; set; }
+        public Conta? ContaSelecionada { get; set; }
+    }
     public static class ProcessarPlanilha
     {
-
-        static readonly string[] irrelevantes = [
-            "sa", "s a", "ltda", "me", "epp",
-            "com", "comercio", "comercial",
-            "filial", "loja", "de", "e", "s/a",
-            "online", "alimentos", "distribuidora",
-            "industria", "servicos", "eireli", "tecnologia",
-            "distribuicao"
-            ];
-
-        static string Normalizar(string texto)
+        public static string Normalizar(string text) => text.ToLower().Replace(".", "");
+        public static string[] GetTokens(string text) => text.Split(" ");
+        public static Conta MatchFornecedor(string forn, List<Conta> contas)
         {
-            if (String.IsNullOrEmpty(texto))
-                return string.Empty;
+            Conta contaEscolhida = contas.First(x => x.numConta == Program.contaFornecedoresDiversos);
 
-            texto = texto.ToLowerInvariant();
+            List<ContaMatch> contasSelecionadas = new();
 
-            texto = texto.Normalize(NormalizationForm.FormD);
-            texto = new string(texto.Where(c => CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark).ToArray());
-            texto = Regex.Replace(texto, @"[^\w\s]", "");
-            texto = Regex.Replace(texto, @"\s+", " ").Trim();
-
-            foreach (var w in irrelevantes)
-                texto = Regex.Replace(texto, $@"\b{w}\b", "");
-
-            return texto;
-        }
-        static string[] Tokens(string texto) => texto.Split(' ', StringSplitOptions.RemoveEmptyEntries).Where(x => x.Length > 4).ToArray();
-        static List<Conta> MatchFornecedor(string nomePlanilha, List<Conta> contas)
-        {
-            var pTokens = Tokens(nomePlanilha);
-
-            if (pTokens.Length == 0)
-                return new List<Conta>();
-
-            return contas.Where(c =>
+            foreach(Conta conta in contas)
             {
-                var cTokens = Tokens(Normalizar(c.nomeConta));
-
-                if (cTokens.Length == 0)
-                    return false;
-
-                return cTokens.Count(t => pTokens.Contains(t)) >= (pTokens.Count() > 1 ? pTokens.Count() / 2 : 1);
-            }).ToList();
+                string[] contaTokens = GetTokens(Normalizar(conta.nomeConta ?? ""));
+                string[] fornecedorTokens = GetTokens(Normalizar(forn));
+                int tokensQuantity = contaTokens.Count();
+                foreach(string ct in contaTokens)
+                {
+                    int matchQuantity = fornecedorTokens.Where(x => x == ct).Count();
+                    if (matchQuantity == tokensQuantity)
+                    {
+                        contasSelecionadas.Add(new ContaMatch()
+                        {
+                            matchQuantity = matchQuantity,
+                            ContaSelecionada = contas.First(x => x.nomeConta == conta.nomeConta)
+                        });
+                    }
+                    else if (matchQuantity < tokensQuantity)
+                        tokensQuantity--;
+                    else if (matchQuantity == 0)
+                        break;
+                }
+            }
+            foreach(var conta in contasSelecionadas)
+            {
+                if(conta.matchQuantity > 1)
+                    Debug.WriteLine($"{conta.matchQuantity} - {conta.ContaSelecionada.nomeConta}");
+            }
+            return contaEscolhida;
         }
-
         public static List<Movimento> ProcessarMovimentos(string path)
         {
             List<Movimento> movs = new();
@@ -71,11 +68,11 @@ namespace ImportadorContaMovimentacao.Scripts
 
                     //TRIM FORNECEDOR.
                     string fornecedorPlan = row.Cell("F").Value.ToString();
-                    List<Conta> matchs = MatchFornecedor(Normalizar(fornecedorPlan), contas);
+                    Conta match = MatchFornecedor(fornecedorPlan, contas);
                     string cnpj = row.Cell("E").Value.ToString();
 
-                    string contaCred = matchs?.FirstOrDefault()?.numConta ?? Program.contaFornecedoresDiversos;
-                    string descricaoCred = contas?.FirstOrDefault(x => contaCred.Equals(x.numConta))?.nomeConta ?? " -** Não encontrada.";
+                    string contaCred = match.numConta;
+                    string descricaoCred = match.nomeConta ?? " -** Não encontrada.";
                     string contaDeb = ""; //Ajustar conforme CFOP.
                     string descricaoDeb = contas?.FirstOrDefault(x => contaDeb.Equals(x.numConta))?.nomeConta ?? " -** Não encontrada.";
 

@@ -6,7 +6,7 @@ namespace ImportadorContaMovimentacao.Scripts
         public static string downloadsPath = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads");
         public static void ShowError(Exception ex)
         {
-            MessageBox.Show("Erro: " + ex.Message, "Erro", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
+            MessageBox.Show("Erro: " + ex.Message + " - " + ex.StackTrace, "Erro", System.Windows.Forms.MessageBoxButtons.OK, System.Windows.Forms.MessageBoxIcon.Error);
         }
 
         //Parametros
