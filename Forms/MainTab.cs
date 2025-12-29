@@ -29,6 +29,7 @@ namespace ImportadorContaMovimentacao
             if (GEForm.DialogResult == DialogResult.OK)
             {
                 empresaLB.Text = GerenciarEmpresas.selected;
+                MostrarFornecedorDiv();
             }
         }
 
@@ -97,6 +98,11 @@ namespace ImportadorContaMovimentacao
                 movGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = Color.LightYellow;
                 e.CellStyle.Font = new Font(movGridView.Font, FontStyle.Bold);
             }
+            else
+            {
+                movGridView.Rows[e.RowIndex].DefaultCellStyle.BackColor = movGridView.DefaultCellStyle.BackColor;
+                e.CellStyle.Font = new Font(movGridView.Font, FontStyle.Bold);
+            }
             if (String.IsNullOrEmpty(movGridView.Rows[e.RowIndex].Cells["contaDebito"].Value.ToString()))
             {
                 movGridView.Rows[e.RowIndex].Cells["contaDebito"].Style.BackColor = Color.LightSalmon;
@@ -114,7 +120,6 @@ namespace ImportadorContaMovimentacao
                 }
             }
         }
-
         private void movGridView_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             if (e.RowIndex < 0)
@@ -266,7 +271,7 @@ namespace ImportadorContaMovimentacao
         private void ProcessarBTTN_Click(object sender, EventArgs e)
         {
             GerarResultado.ProcessarMovimentos(movsProcessados);
-        } 
+        }
 
     }
 }

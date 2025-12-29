@@ -84,7 +84,7 @@ namespace ImportadorContaMovimentacao.Scripts
                         dataMovimento = dataMov,
                         contaDebito = contaDeb,
                         descricaoDebito = descricaoDeb,
-                        contaCredito = contaCred,
+                        contaCredito = GerenciarEmpresas.selected.Split(" - ")[2] == "D" ? contaCred : Program.contaFornecedoresDiversos,
                         descricaoCredito = descricaoCred,
                         valorMovimento = vlrMov,
                         historico = historico,
