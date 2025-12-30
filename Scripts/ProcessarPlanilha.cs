@@ -1,16 +1,12 @@
 ﻿using ClosedXML.Excel;
 using ImportadorContaMovimentacao.Forms;
-using System.Diagnostics;
-using System.Globalization;
-using System.Runtime.CompilerServices;
-using System.Text;
 using System.Text.RegularExpressions;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
     public class ContaMatch
     {
-        public int matchQuantity { get; set; }
+        public int MatchQuantity { get; set; }
         public Conta? ContaSelecionada { get; set; }
     }
     public static class ProcessarPlanilha
@@ -38,12 +34,12 @@ namespace ImportadorContaMovimentacao.Scripts
 
                 return new ContaMatch
                 {
-                    matchQuantity = matches,
+                    MatchQuantity = matches,
                     ContaSelecionada = conta
                 };
-            }).OrderByDescending(x => x.matchQuantity).FirstOrDefault();
+            }).OrderByDescending(x => x.MatchQuantity).FirstOrDefault();
 
-            return contaMatch?.matchQuantity > 1 ? contaMatch.ContaSelecionada : contas.First(x => x.numConta == Program.contaFornecedoresDiversos);
+            return contaMatch?.MatchQuantity > 1 ? contaMatch.ContaSelecionada : contas.First(x => x.numConta == Program.contaFornecedoresDiversos);
         }
         public static List<Movimento> ProcessarMovimentos(string path)
         {

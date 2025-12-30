@@ -124,7 +124,7 @@ namespace ImportadorContaMovimentacao.Scripts
             {
                 using (var cmd = DbConnection().CreateCommand())
                 {
-                    cmd.CommandText = "SELECT * FROM Contas";
+                    cmd.CommandText = "SELECT * FROM Contas ORDER BY contaAnalitica";
                     using (var reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())

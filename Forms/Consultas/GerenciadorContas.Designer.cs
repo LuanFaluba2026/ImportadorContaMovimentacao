@@ -35,6 +35,8 @@
             grupoTB = new TextBox();
             filtrarGrupoCB = new CheckBox();
             consultaGrupoBTTN = new Button();
+            addBTTN = new Button();
+            removeBTTN = new Button();
             ((System.ComponentModel.ISupportInitialize)contasGridView).BeginInit();
             SuspendLayout();
             // 
@@ -51,14 +53,14 @@
             contasGridView.ReadOnly = true;
             contasGridView.RowHeadersVisible = false;
             contasGridView.SelectionMode = DataGridViewSelectionMode.FullRowSelect;
-            contasGridView.Size = new Size(752, 526);
+            contasGridView.Size = new Size(752, 468);
             contasGridView.TabIndex = 0;
             contasGridView.CellDoubleClick += contasGridView_CellDoubleClick;
             contasGridView.CellFormatting += contasGridView_CellFormatting;
             // 
             // pesquisaTB
             // 
-            pesquisaTB.Location = new Point(12, 30);
+            pesquisaTB.Location = new Point(12, 27);
             pesquisaTB.Name = "pesquisaTB";
             pesquisaTB.Size = new Size(152, 23);
             pesquisaTB.TabIndex = 1;
@@ -67,7 +69,7 @@
             // label1
             // 
             label1.AutoSize = true;
-            label1.Location = new Point(12, 12);
+            label1.Location = new Point(12, 9);
             label1.Name = "label1";
             label1.Size = new Size(56, 15);
             label1.TabIndex = 2;
@@ -78,7 +80,7 @@
             selecFiltroCMB.DropDownStyle = ComboBoxStyle.DropDownList;
             selecFiltroCMB.FormattingEnabled = true;
             selecFiltroCMB.Items.AddRange(new object[] { "numConta", "nomeConta" });
-            selecFiltroCMB.Location = new Point(170, 30);
+            selecFiltroCMB.Location = new Point(170, 27);
             selecFiltroCMB.Name = "selecFiltroCMB";
             selecFiltroCMB.Size = new Size(95, 23);
             selecFiltroCMB.TabIndex = 3;
@@ -86,7 +88,7 @@
             // grupoTB
             // 
             grupoTB.Enabled = false;
-            grupoTB.Location = new Point(110, 59);
+            grupoTB.Location = new Point(110, 56);
             grupoTB.Name = "grupoTB";
             grupoTB.Size = new Size(122, 23);
             grupoTB.TabIndex = 1;
@@ -95,7 +97,7 @@
             // filtrarGrupoCB
             // 
             filtrarGrupoCB.AutoSize = true;
-            filtrarGrupoCB.Location = new Point(12, 62);
+            filtrarGrupoCB.Location = new Point(12, 59);
             filtrarGrupoCB.Name = "filtrarGrupoCB";
             filtrarGrupoCB.Size = new Size(92, 19);
             filtrarGrupoCB.TabIndex = 4;
@@ -106,18 +108,39 @@
             // consultaGrupoBTTN
             // 
             consultaGrupoBTTN.Enabled = false;
-            consultaGrupoBTTN.Location = new Point(238, 59);
+            consultaGrupoBTTN.Location = new Point(238, 56);
             consultaGrupoBTTN.Name = "consultaGrupoBTTN";
             consultaGrupoBTTN.Size = new Size(27, 23);
             consultaGrupoBTTN.TabIndex = 5;
             consultaGrupoBTTN.Text = "...";
             consultaGrupoBTTN.UseVisualStyleBackColor = true;
             // 
+            // addBTTN
+            // 
+            addBTTN.Location = new Point(854, 484);
+            addBTTN.Name = "addBTTN";
+            addBTTN.Size = new Size(75, 23);
+            addBTTN.TabIndex = 6;
+            addBTTN.Text = "Adicionar";
+            addBTTN.UseVisualStyleBackColor = true;
+            addBTTN.Click += addBTTN_Click;
+            // 
+            // removeBTTN
+            // 
+            removeBTTN.Location = new Point(935, 484);
+            removeBTTN.Name = "removeBTTN";
+            removeBTTN.Size = new Size(75, 23);
+            removeBTTN.TabIndex = 6;
+            removeBTTN.Text = "Remover";
+            removeBTTN.UseVisualStyleBackColor = true;
+            // 
             // GerenciadorContas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1035, 550);
+            ClientSize = new Size(1035, 512);
+            Controls.Add(removeBTTN);
+            Controls.Add(addBTTN);
             Controls.Add(consultaGrupoBTTN);
             Controls.Add(filtrarGrupoCB);
             Controls.Add(selecFiltroCMB);
@@ -143,5 +166,7 @@
         private TextBox grupoTB;
         private CheckBox filtrarGrupoCB;
         private Button consultaGrupoBTTN;
+        private Button addBTTN;
+        private Button removeBTTN;
     }
 }

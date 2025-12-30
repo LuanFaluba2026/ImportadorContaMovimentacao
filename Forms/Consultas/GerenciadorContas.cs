@@ -1,14 +1,16 @@
-﻿using ImportadorContaMovimentacao.Scripts;
+﻿using ImportadorContaMovimentacao.Forms.Dialogs;
+using ImportadorContaMovimentacao.Scripts;
 using System.Data;
 
 namespace ImportadorContaMovimentacao.Forms.Consultas
 {
     public partial class GerenciadorContas : Form
     {
+        List<Conta> contas = DBConfig.GetContas();
         public GerenciadorContas()
         {
             InitializeComponent();
-            ShowData(DBConfig.GetContas());
+            ShowData(contas);
             selecFiltroCMB.SelectedIndex = 1;
         }
         public void ChamarFiltro(string filtroConta)
@@ -23,7 +25,7 @@ namespace ImportadorContaMovimentacao.Forms.Consultas
         }
         private void grupoTB_TextChanged(object sender, EventArgs e)
         {
-            ShowData(DBConfig.GetContas().Where(x => x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
+            ShowData(contas.Where(x => x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
         }
         private void contasGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
@@ -55,10 +57,10 @@ namespace ImportadorContaMovimentacao.Forms.Consultas
                 switch (selecFiltroCMB.Text)
                 {
                     case "numConta":
-                        ShowData(DBConfig.GetContas().Where(x => x.numConta.StartsWith(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase) && x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
+                        ShowData(contas.Where(x => x.numConta.StartsWith(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase) && x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
                         break;
                     case "nomeConta":
-                        ShowData(DBConfig.GetContas().Where(x => x.nomeConta.Contains(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase) && x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
+                        ShowData(contas.Where(x => x.nomeConta.Contains(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase) && x.contaAnalitica.StartsWith(grupoTB.Text)).ToList());
                         break;
                 }
             }
@@ -67,10 +69,10 @@ namespace ImportadorContaMovimentacao.Forms.Consultas
                 switch (selecFiltroCMB.Text)
                 {
                     case "numConta":
-                        ShowData(DBConfig.GetContas().Where(x => x.numConta.StartsWith(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase)).ToList());
+                        ShowData(contas.Where(x => x.numConta.StartsWith(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase)).ToList());
                         break;
                     case "nomeConta":
-                        ShowData(DBConfig.GetContas().Where(x => x.nomeConta.Contains(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase)).ToList());
+                        ShowData(contas.Where(x => x.nomeConta.Contains(pesquisaTB.Text, StringComparison.OrdinalIgnoreCase)).ToList());
                         break;
                 }
             }
@@ -87,6 +89,16 @@ namespace ImportadorContaMovimentacao.Forms.Consultas
                 contaSelecionada = clicked;
                 this.DialogResult = DialogResult.OK;
                 this.Close();
+            }
+        }
+
+        private void addBTTN_Click(object sender, EventArgs e)
+        {
+            AdicionarConta form = new();
+            if(form.ShowDialog() == DialogResult.OK)
+            {
+                ShowData(contas);
+                contasGridView.CurrentCell = contasGridView?.Rows?.Cast<DataGridViewRow>()?.FirstOrDefault(x => x.Equals(form.numConta))?.Cells["numConta"];
             }
         }
     }
