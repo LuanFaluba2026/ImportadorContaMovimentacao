@@ -22,7 +22,7 @@ namespace ImportadorContaMovimentacao.Scripts
             newText = newText.Replace(".", "").Replace("-", " ").Replace("/", "");
             foreach (string x in irrelevantes)
                 newText = newText.Replace(x, " ");
-
+            newText = Regex.Replace(newText, @"\s+", " ");
             return newText;
         }
         public static string[] GetTokens(string text) => text.Split(" ");
@@ -55,7 +55,8 @@ namespace ImportadorContaMovimentacao.Scripts
 
 
                 List<Conta> contas = DBConfig.GetContas().Where(x => x.contaAnalitica.StartsWith(Program.analiticoPassivos)).ToList();
-                foreach (var row in ws.RowsUsed().Skip(1).SkipLast(2))
+                var rows = ws.RowsUsed().Skip(1).SkipLast(2);
+                foreach (var row in rows)
                 {
                     //distinção
                     string numNota = row.Cell("A").Value.ToString();
@@ -64,6 +65,17 @@ namespace ImportadorContaMovimentacao.Scripts
                     string fornecedorPlan = row.Cell("F").Value.ToString();
                     Conta match = MatchFornecedor(fornecedorPlan, contas);
                     string cnpj = row.Cell("E").Value.ToString();
+
+                    string cnpjMatriz = rows?.FirstOrDefault(x =>
+                    {
+                        string cell = x.Cell("E").Value.ToString();
+                        string cellStart = cell.Substring(0, 8);
+                        string cellEnding = cell.Substring(8, 4);
+                        return cellStart == cnpj.Substring(0, 8) && cellEnding == "0001";
+                    })?.Cell("E").Value.ToString() ?? "";
+                    if (!String.IsNullOrEmpty(cnpjMatriz))
+                        cnpj = cnpjMatriz;
+
 
                     var fornecedoresCadastrados = DBConfig.GetFornecedores().FirstOrDefault(x => x.cnpj.Equals(cnpj));
                     if (fornecedoresCadastrados != null && !String.IsNullOrEmpty(fornecedoresCadastrados.contaCredito))
