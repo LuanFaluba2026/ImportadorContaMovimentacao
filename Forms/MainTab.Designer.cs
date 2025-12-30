@@ -48,6 +48,8 @@
             toolStripMenuItem1 = new ToolStripMenuItem();
             contasCadastradasToolStripMenuItem = new ToolStripMenuItem();
             ProcessarBTTN = new Button();
+            undoBTTN = new Button();
+            label6 = new Label();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)movGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -81,7 +83,9 @@
             movGridView.SelectionMode = DataGridViewSelectionMode.CellSelect;
             movGridView.Size = new Size(1277, 561);
             movGridView.TabIndex = 0;
+            movGridView.CellBeginEdit += movGridView_CellBeginEdit;
             movGridView.CellContentClick += movGridView_CellContentClick;
+            movGridView.CellEndEdit += movGridView_CellEndEdit;
             movGridView.CellEnter += movGridView_CellEnter;
             movGridView.CellFormatting += movGridView_CellFormatting;
             movGridView.CellValidated += movGridView_CellValidated;
@@ -89,13 +93,13 @@
             // 
             // label1
             // 
-            label1.Anchor = AnchorStyles.Top | AnchorStyles.Bottom | AnchorStyles.Left;
+            label1.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             label1.AutoSize = true;
-            label1.Location = new Point(215, 27);
+            label1.Location = new Point(1300, 25);
             label1.Name = "label1";
-            label1.Size = new Size(196, 15);
+            label1.Size = new Size(198, 15);
             label1.TabIndex = 1;
-            label1.Text = "(F1) - Pesquisar. (F2) Aplicar a todos";
+            label1.Text = "(F1) - Pesquisar (F2) - Aplicar Abaixo";
             label1.TextAlign = ContentAlignment.MiddleCenter;
             // 
             // label2
@@ -258,11 +262,32 @@
             ProcessarBTTN.UseVisualStyleBackColor = true;
             ProcessarBTTN.Click += ProcessarBTTN_Click;
             // 
+            // undoBTTN
+            // 
+            undoBTTN.Location = new Point(218, 20);
+            undoBTTN.Name = "undoBTTN";
+            undoBTTN.Size = new Size(24, 23);
+            undoBTTN.TabIndex = 17;
+            undoBTTN.Text = "<";
+            undoBTTN.UseVisualStyleBackColor = true;
+            undoBTTN.Click += undoBTTN_Click;
+            // 
+            // label6
+            // 
+            label6.AutoSize = true;
+            label6.Location = new Point(242, 25);
+            label6.Name = "label6";
+            label6.Size = new Size(51, 15);
+            label6.TabIndex = 18;
+            label6.Text = "Desfazer";
+            // 
             // MainTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1510, 624);
+            Controls.Add(label6);
+            Controls.Add(undoBTTN);
             Controls.Add(label5);
             Controls.Add(label4);
             Controls.Add(contaDiversosLB);
@@ -316,5 +341,7 @@
         private ToolStripMenuItem toolStripMenuItem1;
         private ToolStripMenuItem contasCadastradasToolStripMenuItem;
         private Button ProcessarBTTN;
+        private Button undoBTTN;
+        private Label label6;
     }
 }

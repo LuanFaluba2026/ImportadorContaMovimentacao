@@ -47,7 +47,7 @@ namespace ImportadorContaMovimentacao
         }
         private void MostrarFornecedorDiv()
         {
-            contaDiversosTB.Text = Program.contaFornecedoresDiversos.ToString() ?? "";
+            contaDiversosTB.Text = Program.contaFornecedoresDiversos ?? "";
             contaDiversosLB.Text = DBConfig.GetContas()?.FirstOrDefault(x => x.numConta == Program.contaFornecedoresDiversos)?.nomeConta ?? "*-- Não Encontrada.";
         }
 
@@ -92,6 +92,10 @@ namespace ImportadorContaMovimentacao
 
         private void movGridView_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
         {
+            movGridView.Columns["descricaoDebito"].ReadOnly = true;
+            movGridView.Columns["descricaoCredito"].ReadOnly = true;
+            movGridView.Columns["cnpj"].ReadOnly = true;
+
             movGridView.Columns["valorMovimento"].DefaultCellStyle.Format = "C2";
             if (movGridView.Rows[e.RowIndex].Cells["contaCredito"].Value.ToString() == Program.contaFornecedoresDiversos)
             {
@@ -203,6 +207,10 @@ namespace ImportadorContaMovimentacao
             //f3 - faz com que o conteúdo da celula selecionada se aplique para todas as outras de baixo
             if (e.KeyCode == Keys.F2)
             {
+                var msgBox = MessageBox.Show("Deseja alterar todas as celulas abaixo?", "Atenção!", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                if (msgBox != DialogResult.Yes) return;
+
+                e.SuppressKeyPress = true;
                 var cell = movGridView.CurrentCell;
                 int index = cell.RowIndex;
                 foreach (DataGridViewRow row in movGridView.Rows)
@@ -234,15 +242,18 @@ namespace ImportadorContaMovimentacao
                         }
 
                         row.Cells[cell.ColumnIndex].Value = cell.Value;
-                    }
+                     }
                 }
                 MostrarElementosGrid();
             }
+            if (e.Control && e.KeyCode == Keys.Z)
+                Desfazer();
         }
         //Preencher descrição
         string? cellValue;
         private void movGridView_CellEnter(object sender, DataGridViewCellEventArgs e)
         {
+
             cellValue = movGridView.Rows[e.RowIndex].Cells[e.ColumnIndex].Value.ToString();
         }
         private void movGridView_CellValidated(object sender, DataGridViewCellEventArgs e)
@@ -265,13 +276,65 @@ namespace ImportadorContaMovimentacao
                 MostrarElementosGrid();
             }
         }
+        //Redefinir com ctrl + z
+        object oldValue;
+        Stack<CelulaAlterada> undoStack = new();
+        private void Desfazer()
+        {
+            if (undoStack.Count == 0) return;
 
+            var change = undoStack.Pop();
+            movGridView.CurrentCell = movGridView[change.ColumnIndex, change.RowIndex];
+            switch (change.ColumnName)
+            {
+                case "dataMovimento":
+                    movsProcessados[change.RowIndex].dataMovimento = (DateTime)change.OldValue;
+                    break;
+                case "contaDebito":
+                    movsProcessados[change.RowIndex].contaDebito = (string)change.OldValue;
+                    break;
+                case "contaCredito":
+                    movsProcessados[change.RowIndex].contaCredito = (string)change.OldValue;
+                    break;
+                case "valorMovimento":
+                    movsProcessados[change.RowIndex].valorMovimento = (double)change.OldValue;
+                    break;
+                case "historico":
+                    movsProcessados[change.RowIndex].historico = (string)change.OldValue;
+                    break;
+            }
+            MostrarElementosGrid();
+        }
+        private void movGridView_CellBeginEdit(object sender, DataGridViewCellCancelEventArgs e)
+        {
+            oldValue = movGridView[e.ColumnIndex, e.RowIndex].Value;
+        }
+        private void movGridView_CellEndEdit(object sender, DataGridViewCellEventArgs e)
+        {
+            undoStack.Push(new CelulaAlterada
+            {
+                RowIndex = e.RowIndex,
+                ColumnIndex = e.ColumnIndex,
+                ColumnName = movGridView.Columns[e.ColumnIndex].Name,
+                OldValue = oldValue
+            });
+        }
+        private void undoBTTN_Click(object sender, EventArgs e)
+        {
+            Desfazer();
+        }
         //Iniciar Processamento -
 
         private void ProcessarBTTN_Click(object sender, EventArgs e)
         {
             GerarResultado.ProcessarMovimentos(movsProcessados);
         }
-
+    }
+    class CelulaAlterada
+    {
+        public int RowIndex;
+        public int ColumnIndex;
+        public string? ColumnName;
+        public object? OldValue;
     }
 }
