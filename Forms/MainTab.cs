@@ -9,27 +9,30 @@ namespace ImportadorContaMovimentacao
         public MainTab()
         {
             InitializeComponent();
+            if(TrocarEmpresa() != DialogResult.OK)return;
 
             this.KeyPreview = true;
 
-            TrocarEmpresa();
             MostrarFornecedorDiv();
         }
         private void selectEmpresa_Click(object sender, EventArgs e)
         {
             TrocarEmpresa();
         }
-        private void TrocarEmpresa()
+        private DialogResult TrocarEmpresa()
         {
             // Chama tela de seleção de empresa
             GerenciarEmpresas GEForm = new();
+
             GEForm.ShowDialog();
 
             if (GEForm.DialogResult == DialogResult.OK)
             {
                 empresaLB.Text = GerenciarEmpresas.selected;
                 MostrarFornecedorDiv();
+                return GEForm.DialogResult;
             }
+            return DialogResult.Abort;
         }
 
         private void BuscarContasPassivasBTTN_Click(object sender, EventArgs e)
