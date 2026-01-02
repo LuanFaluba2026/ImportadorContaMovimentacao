@@ -41,8 +41,25 @@ namespace ImportadorContaMovimentacao.Scripts
 
             return contaMatch?.MatchQuantity > 1 ? contaMatch.ContaSelecionada : contas.First(x => x.numConta == Program.contaFornecedoresDiversos);
         }
+
+
         public static List<Movimento> ProcessarMovimentos(string path)
         {
+            //Colunas
+            
+            const string numNotaCol = "A";
+            const string nomeFornecedorCol = "F";
+            const string cnpjCol = "E";
+            const string dataMovCol = "D";
+            const string vlrMovCol = "Q";
+            /*
+            const string numNotaCol = "A";
+            const string nomeFornecedorCol = "G";
+            const string cnpjCol = "F";
+            const string dataMovCol = "E";
+            const string vlrMovCol = "N";
+            */
+
             List<Movimento> movs = new();
             try
             {
@@ -54,13 +71,13 @@ namespace ImportadorContaMovimentacao.Scripts
                 var rows = ws.RowsUsed().Skip(1).SkipLast(2);
                 foreach (var row in rows)
                 {
-                    //distinção
-                    string numNota = row.Cell("A").Value.ToString();
+                    //Número da nota
+                    string numNota = row.Cell(numNotaCol).Value.ToString();
 
-                    //TRIM FORNECEDOR.
-                    string fornecedorPlan = row.Cell("F").Value.ToString();
+                    //Busca de fornecedor
+                    string fornecedorPlan = row.Cell(nomeFornecedorCol).Value.ToString();
                     Conta match = MatchFornecedor(fornecedorPlan, contas);
-                    string cnpj = row.Cell("E").Value.ToString();
+                    string cnpj = row.Cell(cnpjCol).Value.ToString();
 
                     string cnpjMatriz = rows?.FirstOrDefault(x =>
                     {
@@ -71,20 +88,24 @@ namespace ImportadorContaMovimentacao.Scripts
                     })?.Cell("E").Value.ToString() ?? "";
                     if (!String.IsNullOrEmpty(cnpjMatriz))
                         cnpj = cnpjMatriz;
-
-
+                    
                     var fornecedoresCadastrados = DBConfig.GetFornecedores().FirstOrDefault(x => x.cnpj.Equals(cnpj));
                     if (fornecedoresCadastrados != null && !String.IsNullOrEmpty(fornecedoresCadastrados.contaCredito))
                         match = DBConfig.GetContas().FirstOrDefault(x => x.numConta == fornecedoresCadastrados.contaCredito);
 
+                    //Busca de Contas contábeis.
                     string contaCred = match.numConta;
                     string descricaoCred = match.nomeConta ?? " -** Não encontrada.";
                     string contaDeb = ""; //Ajustar conforme CFOP.
                     string descricaoDeb = contas?.FirstOrDefault(x => contaDeb.Equals(x.numConta))?.nomeConta ?? " -** Não encontrada.";
 
-                    DateTime dataMov = DateTime.Parse(row.Cell("D").Value.ToString());
-                    double vlrMov = (double)row.Cell("Q").Value;
+                    //Data de emissão
+                    DateTime dataMov = DateTime.Parse(row.Cell(dataMovCol).Value.ToString());
+                    //Valor do movimento
+                    double vlrMov = (double)row.Cell(vlrMovCol).Value;
+                    //Geração de histórico padrão
                     string historico = $"VLR. REF. NF {numNota} {fornecedorPlan}";
+                    //Relação de código da empresa cadastrada.
                     string codEmpresa = GerenciarEmpresas.selected.Split(" - ")[0];
 
                     movs.Add(new Movimento()
