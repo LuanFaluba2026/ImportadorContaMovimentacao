@@ -86,6 +86,7 @@ namespace ImportadorContaMovimentacao.Forms
                         if (msgBox == DialogResult.Yes)
                         {
                             ImportadorPlanContas form = new();
+                            form.HasDataBase = erp == "S" ? true : false;
                             form.ShowDialog();
                         }
                     }

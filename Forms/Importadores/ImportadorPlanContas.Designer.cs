@@ -29,11 +29,12 @@
         private void InitializeComponent()
         {
             pathTB = new TextBox();
-            label1 = new Label();
+            caminhoLBL = new Label();
             selectPathBTTN = new Button();
             importBTNN = new Button();
             label2 = new Label();
             empresaLB = new Label();
+            switchLBL = new LinkLabel();
             SuspendLayout();
             // 
             // pathTB
@@ -43,14 +44,14 @@
             pathTB.Size = new Size(316, 23);
             pathTB.TabIndex = 0;
             // 
-            // label1
+            // caminhoLBL
             // 
-            label1.AutoSize = true;
-            label1.Location = new Point(12, 30);
-            label1.Name = "label1";
-            label1.Size = new Size(160, 15);
-            label1.TabIndex = 1;
-            label1.Text = "Caminho Planilha de Contas:";
+            caminhoLBL.AutoSize = true;
+            caminhoLBL.Location = new Point(12, 30);
+            caminhoLBL.Name = "caminhoLBL";
+            caminhoLBL.Size = new Size(160, 15);
+            caminhoLBL.TabIndex = 1;
+            caminhoLBL.Text = "Caminho Planilha de Contas:";
             // 
             // selectPathBTTN
             // 
@@ -90,20 +91,34 @@
             empresaLB.TabIndex = 5;
             empresaLB.Text = "******************";
             // 
-            // ImportadorContaPassiva
+            // switchLBL
+            // 
+            switchLBL.AutoSize = true;
+            switchLBL.LinkArea = new LinkArea(7, 4);
+            switchLBL.Location = new Point(12, 81);
+            switchLBL.Name = "switchLBL";
+            switchLBL.Size = new Size(275, 21);
+            switchLBL.TabIndex = 6;
+            switchLBL.TabStop = true;
+            switchLBL.Text = "Clique aqui se você já possuí um banco de dados.";
+            switchLBL.UseCompatibleTextRendering = true;
+            switchLBL.LinkClicked += switchLBL_LinkClicked;
+            // 
+            // ImportadorPlanContas
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(510, 82);
+            ClientSize = new Size(510, 105);
+            Controls.Add(switchLBL);
             Controls.Add(empresaLB);
             Controls.Add(label2);
             Controls.Add(importBTNN);
             Controls.Add(selectPathBTTN);
-            Controls.Add(label1);
+            Controls.Add(caminhoLBL);
             Controls.Add(pathTB);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             MaximizeBox = false;
-            Name = "ImportadorContaPassiva";
+            Name = "ImportadorPlanContas";
             StartPosition = FormStartPosition.CenterParent;
             Text = "Importador Conta Passiva";
             ResumeLayout(false);
@@ -113,10 +128,11 @@
         #endregion
 
         private TextBox pathTB;
-        private Label label1;
+        private Label caminhoLBL;
         private Button selectPathBTTN;
         private Button importBTNN;
         private Label label2;
         private Label empresaLB;
+        private LinkLabel switchLBL;
     }
 }

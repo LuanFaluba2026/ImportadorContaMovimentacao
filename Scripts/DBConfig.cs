@@ -1,5 +1,6 @@
 ﻿using System.Data.SQLite;
 using System.Diagnostics;
+using System.Security.Cryptography;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
@@ -44,6 +45,26 @@ namespace ImportadorContaMovimentacao.Scripts
 
             }
             catch (Exception ex)
+            {
+                Program.ShowError(ex);
+            }
+        }
+        public static void DuplicarBanco(string path)
+        {
+            try
+            {
+                if (!File.Exists(path)) throw new Exception("Arquivo Inválido.");
+
+                using (var cmd = DbConnection().CreateCommand())
+                {
+                    cmd.CommandText = "ATTACH DATABASE @path AS AttachedDB";
+                    cmd.Parameters.AddWithValue("@path", path);
+                    cmd.ExecuteNonQuery();
+
+                    cmd.CommandText = "INSERT INTO Contas SELECT * FROM AttachedDB.Contas";
+                    cmd.ExecuteNonQuery();
+                }
+            }catch(Exception ex)
             {
                 Program.ShowError(ex);
             }
