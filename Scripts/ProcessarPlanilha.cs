@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using ImportadorContaMovimentacao.Forms;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
@@ -45,24 +47,36 @@ namespace ImportadorContaMovimentacao.Scripts
 
         public static List<Movimento> ProcessarMovimentos(string path)
         {
-            //Colunas
-            
-            const string numNotaCol = "A";
-            const string nomeFornecedorCol = "F";
-            const string cnpjCol = "E";
-            const string dataMovCol = "D";
-            const string vlrMovCol = "Q";
-            /*
-            const string numNotaCol = "A";
-            const string nomeFornecedorCol = "G";
-            const string cnpjCol = "F";
-            const string dataMovCol = "E";
-            const string vlrMovCol = "N";
-            */
-
             List<Movimento> movs = new();
             try
             {
+                //numNota
+                //Nome Fornecedor
+                //cnpj
+                //alguma forma de conseguir o cnpj da matriz
+
+                var xmlFiles = Directory.GetFiles(path, "*.xml");
+                if (xmlFiles.Count() == 0) throw new Exception("Nenhum XML encontrado na pasta.");
+
+                foreach (var xmlPath in xmlFiles)
+                {
+                    XDocument xml = XDocument.Load(xmlPath);
+                    XNamespace nfData = "http://www.portalfiscal.inf.br/nfe";
+
+                    //Gather Data
+                    var daodsNF = xml.Descendants(nfData + "ide")?.FirstOrDefault();
+                    var dadosEmit = xml.Descendants(nfData + "emit")?.FirstOrDefault();
+                    var valores = xml.Descendants(nfData + "ICMSTot")?.FirstOrDefault();
+
+                    //Data de emissão
+                    DateTime dataMov = DateTime.Parse(row.Cell(dataMovCol).Value.ToString());
+                    //Valor do movimento
+                    double vlrMov = (double)row.Cell(vlrMovCol).Value;
+                    //Relação de código da empresa cadastrada.
+                    string codEmpresa = GerenciarEmpresas.selected.Split(" - ")[0];
+                }
+
+                /*
                 var wb = new XLWorkbook(path);
                 var ws = wb.Worksheet(1);
 
@@ -99,14 +113,8 @@ namespace ImportadorContaMovimentacao.Scripts
                     string contaDeb = ""; //Ajustar conforme CFOP.
                     string descricaoDeb = contas?.FirstOrDefault(x => contaDeb.Equals(x.numConta))?.nomeConta ?? " -** Não encontrada.";
 
-                    //Data de emissão
-                    DateTime dataMov = DateTime.Parse(row.Cell(dataMovCol).Value.ToString());
-                    //Valor do movimento
-                    double vlrMov = (double)row.Cell(vlrMovCol).Value;
                     //Geração de histórico padrão
                     string historico = $"VLR. REF. NF {numNota} {fornecedorPlan}";
-                    //Relação de código da empresa cadastrada.
-                    string codEmpresa = GerenciarEmpresas.selected.Split(" - ")[0];
 
                     movs.Add(new Movimento()
                     {
@@ -128,8 +136,7 @@ namespace ImportadorContaMovimentacao.Scripts
                         cnpj = cnpj,
                         nome = fornecedorPlan
                     });
-                }
-
+                }*/
             }
             catch (Exception ex)
             {
