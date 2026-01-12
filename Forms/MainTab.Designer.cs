@@ -50,6 +50,8 @@
             ProcessarBTTN = new Button();
             undoBTTN = new Button();
             label6 = new Label();
+            xmlCheck = new CheckBox();
+            planCheck = new CheckBox();
             tableLayoutPanel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)movGridView).BeginInit();
             menuStrip1.SuspendLayout();
@@ -122,7 +124,7 @@
             // 
             // importarMovBTTN
             // 
-            importarMovBTTN.Location = new Point(9, 92);
+            importarMovBTTN.Location = new Point(9, 114);
             importarMovBTTN.Name = "importarMovBTTN";
             importarMovBTTN.Size = new Size(194, 35);
             importarMovBTTN.TabIndex = 5;
@@ -177,21 +179,21 @@
             // panel1
             // 
             panel1.BorderStyle = BorderStyle.FixedSingle;
-            panel1.Location = new Point(4, 136);
+            panel1.Location = new Point(4, 158);
             panel1.Name = "panel1";
             panel1.Size = new Size(205, 3);
             panel1.TabIndex = 10;
             // 
             // contaDiversosTB
             // 
-            contaDiversosTB.Location = new Point(45, 192);
+            contaDiversosTB.Location = new Point(45, 214);
             contaDiversosTB.Name = "contaDiversosTB";
             contaDiversosTB.Size = new Size(44, 23);
             contaDiversosTB.TabIndex = 11;
             // 
             // BuscarContasPassivasBTTN
             // 
-            BuscarContasPassivasBTTN.Location = new Point(12, 192);
+            BuscarContasPassivasBTTN.Location = new Point(12, 214);
             BuscarContasPassivasBTTN.Name = "BuscarContasPassivasBTTN";
             BuscarContasPassivasBTTN.Size = new Size(27, 23);
             BuscarContasPassivasBTTN.TabIndex = 12;
@@ -202,7 +204,7 @@
             // contaDiversosLB
             // 
             contaDiversosLB.AutoEllipsis = true;
-            contaDiversosLB.Location = new Point(95, 195);
+            contaDiversosLB.Location = new Point(95, 217);
             contaDiversosLB.Name = "contaDiversosLB";
             contaDiversosLB.Size = new Size(117, 15);
             contaDiversosLB.TabIndex = 13;
@@ -212,7 +214,7 @@
             // label4
             // 
             label4.AutoSize = true;
-            label4.Location = new Point(12, 174);
+            label4.Location = new Point(12, 196);
             label4.Name = "label4";
             label4.Size = new Size(173, 15);
             label4.TabIndex = 14;
@@ -221,7 +223,7 @@
             // label5
             // 
             label5.AutoSize = true;
-            label5.Location = new Point(69, 148);
+            label5.Location = new Point(69, 170);
             label5.Name = "label5";
             label5.Size = new Size(67, 15);
             label5.TabIndex = 15;
@@ -281,11 +283,37 @@
             label6.TabIndex = 18;
             label6.Text = "Desfazer";
             // 
+            // xmlCheck
+            // 
+            xmlCheck.AutoSize = true;
+            xmlCheck.Checked = true;
+            xmlCheck.CheckState = CheckState.Checked;
+            xmlCheck.Location = new Point(12, 92);
+            xmlCheck.Name = "xmlCheck";
+            xmlCheck.Size = new Size(50, 19);
+            xmlCheck.TabIndex = 19;
+            xmlCheck.Text = "XML";
+            xmlCheck.UseVisualStyleBackColor = true;
+            xmlCheck.CheckedChanged += xmlCheck_CheckedChanged;
+            // 
+            // planCheck
+            // 
+            planCheck.AutoSize = true;
+            planCheck.Location = new Point(80, 92);
+            planCheck.Name = "planCheck";
+            planCheck.Size = new Size(93, 19);
+            planCheck.TabIndex = 19;
+            planCheck.Text = "Planilha Sieg";
+            planCheck.UseVisualStyleBackColor = true;
+            planCheck.CheckedChanged += planCheck_CheckedChanged;
+            // 
             // MainTab
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1510, 624);
+            Controls.Add(planCheck);
+            Controls.Add(xmlCheck);
             Controls.Add(label6);
             Controls.Add(undoBTTN);
             Controls.Add(label5);
@@ -343,5 +371,7 @@
         private Button ProcessarBTTN;
         private Button undoBTTN;
         private Label label6;
+        private CheckBox xmlCheck;
+        private CheckBox planCheck;
     }
 }

@@ -8,6 +8,7 @@ namespace ImportadorContaMovimentacao.Scripts
     {
         public long ID { get; set; }
         public string? contaCredito { get; set; }
+        public string? contaDebito { get; set; }
         
     }
     public static class GerarResultado
@@ -49,7 +50,8 @@ namespace ImportadorContaMovimentacao.Scripts
                 forn.Add(new FornecedorLigar()
                 {
                     ID = fornecedor.ID,
-                    contaCredito = movimentos[i].contaCredito
+                    contaCredito = movimentos[i].contaCredito,
+                    contaDebito = movimentos[i].contaDebito
                 });
              }
 
@@ -63,12 +65,27 @@ namespace ImportadorContaMovimentacao.Scripts
         public static void GerarSenior(List<Movimento> movimentos, string empresa)
         {
             List<string> registros = new();
+            List<FornecedorLigar> forn = new();
             foreach(Movimento mov in movimentos)
             {
                 registros.Add($"{empresa};1;{mov.dataMovimento.ToString("dd/MM/yyyy")};{mov.contaDebito};{mov.contaCredito};{mov.valorMovimento};;{mov.historico};{mov.cnpj}");
+                
+                //Ligação de Fornecedores:
+                Fornecedor fornecedor = DBConfig.GetFornecedores().FirstOrDefault(x => x.cnpj.Equals(mov.cnpj)) ?? new Fornecedor();
+                forn.Add(new FornecedorLigar()
+                {
+                    ID = fornecedor.ID,
+                    contaCredito = mov.contaCredito,
+                    contaDebito = mov.contaDebito
+                });
             }
             if (registros.Count == 0)
                 return;
+
+            var requisitoLigacao = MessageBox.Show("Deseja ligar os fornecedores atuais com suas respectivas contas?", "Atenção!", MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation);
+            if (requisitoLigacao == DialogResult.Yes)
+                LigarFornecedores(forn);
+
             string path = Path.Combine(Program.downloadsPath, $"Importar-Fornecedores{DateTime.Now.ToString("dd-MM-yy_hh-mm-ss")}.csv");
             File.WriteAllLines(path, registros);
         }
@@ -79,7 +96,7 @@ namespace ImportadorContaMovimentacao.Scripts
                 DBConfig.UpdateFornecedor(new Fornecedor()
                 {
                     ID = forn.ID,
-                    contaDebito = null,
+                    contaDebito = forn.contaDebito,
                     contaCredito = forn.contaCredito
                 });
             }

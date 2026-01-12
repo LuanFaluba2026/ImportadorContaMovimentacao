@@ -1,6 +1,8 @@
 ﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Spreadsheet;
 using ImportadorContaMovimentacao.Forms;
 using System.Text.RegularExpressions;
+using System.Xml.Linq;
 
 namespace ImportadorContaMovimentacao.Scripts
 {
@@ -9,7 +11,7 @@ namespace ImportadorContaMovimentacao.Scripts
         public int MatchQuantity { get; set; }
         public Conta? ContaSelecionada { get; set; }
     }
-    public static class ProcessarPlanilha
+    public static class Processar
     {
         public static string[] irrelevantes = [" com ", " prod ", " ind ", " de ", " e "];
         public static string Normalizar(string text)
@@ -42,8 +44,86 @@ namespace ImportadorContaMovimentacao.Scripts
             return contaMatch?.MatchQuantity > 1 ? contaMatch.ContaSelecionada : contas.First(x => x.numConta == Program.contaFornecedoresDiversos);
         }
 
+        public static List<Movimento> ProcessarXML(string path)
+        {
+            List<Movimento> movs = new();
+            try
+            {
+                if (!Directory.Exists(path)) throw new Exception("Selecione uma pasta.");
+                var arquivosXML = Directory.GetFiles(path, "*.xml");
+                if (arquivosXML.Length == 0) throw new Exception("Nenhum XML selecionado.");
 
-        public static List<Movimento> ProcessarMovimentos(string path)
+                List<Conta> contas = DBConfig.GetContas().Where(x => x.contaAnalitica.StartsWith(Program.analiticoPassivos)).ToList();
+                foreach (var xmlPath in arquivosXML)
+                {
+                    XDocument doc = XDocument.Load(xmlPath);
+                    XNamespace nf = "http://www.portalfiscal.inf.br/nfe";
+
+                    //Base Info
+                    var xmlInfo = doc.Descendants(nf + "ide").FirstOrDefault();
+                    var fornInfo = doc.Descendants(nf + "emit").FirstOrDefault();
+                    var valInfo = doc.Descendants(nf + "ICMSTot").FirstOrDefault();
+
+                    //Busca Numero da Nota
+                    string numNota = xmlInfo?.Element(nf + "nNF")?.Value ?? "";
+
+                    //Busca de fornecedor
+                    string fornecedorXML = fornInfo?.Element(nf + "xNome")?.Value ?? "";
+                    string cnpj = fornInfo?.Element(nf + "CNPJ")?.Value ?? "";
+                    Conta matchCred = MatchFornecedor(fornecedorXML, contas);
+                    Conta matchDeb = new();
+
+                    //Se fornecedor já existir ->
+                    var fornecedoresCadastrados = DBConfig.GetFornecedores().FirstOrDefault(x => x.cnpj.Equals(cnpj));
+                    if (fornecedoresCadastrados != null && !String.IsNullOrEmpty(fornecedoresCadastrados.contaCredito))
+                        matchCred = DBConfig.GetContas().FirstOrDefault(x => x.numConta == fornecedoresCadastrados.contaCredito);
+                    if (fornecedoresCadastrados != null && !String.IsNullOrEmpty(fornecedoresCadastrados.contaDebito))
+                        matchDeb = DBConfig.GetContas().FirstOrDefault(x => x.numConta == fornecedoresCadastrados.contaDebito);
+
+                    //Busca de Contas contábeis.
+                    string contaCred = matchCred.numConta ?? "";
+                    string descricaoCred = matchCred.nomeConta ?? " -** Não encontrada.";
+                    string contaDeb = matchDeb.numConta ?? "";
+                    string descricaoDeb = matchDeb.nomeConta ?? " -** Não encontrada.";
+
+                    //Data de emissão
+                    DateTime dataMov = DateTime.Parse(xmlInfo?.Element(nf + "dhEmi")?.Value ?? "");
+                    //Valor do movimento
+                    double vlrMov = double.Parse(valInfo?.Element(nf + "vNF")?.Value.Replace(".", ",") ?? "");
+                    //Geração de histórico padrão
+                    string historico = $"VLR. REF. NF {numNota} {fornecedorXML}";
+                    //Relação de código da empresa cadastrada.
+                    string codEmpresa = GerenciarEmpresas.selected.Split(" - ")[0];
+
+                    movs.Add(new Movimento()
+                    {
+                        dataMovimento = dataMov,
+                        contaDebito = contaDeb,
+                        descricaoDebito = descricaoDeb,
+                        contaCredito = GerenciarEmpresas.selected.Split(" - ")[2] == "D" ? contaCred : Program.contaFornecedoresDiversos,
+                        descricaoCredito = descricaoCred,
+                        valorMovimento = vlrMov,
+                        historico = historico,
+                        codigoEmpresa = codEmpresa,
+                        fornecedor = fornecedorXML,
+                        cnpj = cnpj
+                    });
+
+                    //Adicionar fornecedor ao banco:
+                    DBConfig.InsertFornecedores(new Fornecedor()
+                    {
+                        cnpj = cnpj,
+                        nome = fornecedorXML
+                    });
+                }
+            }
+            catch (Exception ex)
+            {
+                Program.ShowError(ex);
+            }
+            return movs;
+        }
+        public static List<Movimento> ProcessarPlanilha(string path)
         {
             //Colunas
             

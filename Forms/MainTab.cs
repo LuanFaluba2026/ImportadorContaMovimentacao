@@ -9,7 +9,7 @@ namespace ImportadorContaMovimentacao
         public MainTab()
         {
             InitializeComponent();
-            if(TrocarEmpresa() != DialogResult.OK)return;
+            if (TrocarEmpresa() != DialogResult.OK) return;
 
             this.KeyPreview = true;
 
@@ -60,13 +60,30 @@ namespace ImportadorContaMovimentacao
         }
         private void selectPathBTTN_Click(object sender, EventArgs e)
         {
-            OpenFileDialog ofd = new();
-            ofd.Filter = "Planilhas SIEG (*.xlsx) |*.xlsx";
-            if (ofd.ShowDialog() == DialogResult.OK)
-            {
-                pathTB.Text = ofd.FileName;
 
+            if (planCheck.Checked)
+            {
+                OpenFileDialog ofd = new();
+                ofd.Filter = "Planilhas SIEG (*.xlsx) |*.xlsx";
+                if (ofd.ShowDialog() == DialogResult.OK)
+                {
+                    pathTB.Text = ofd.FileName;
+
+                }
             }
+            else if (xmlCheck.Checked)
+            {
+                FolderBrowserDialog fbd = new();
+                if (fbd.ShowDialog() == DialogResult.OK)
+                {
+                    fbd.ShowHiddenFiles = true;
+                    pathTB.Text = fbd.SelectedPath;
+                }
+            }
+            else
+                throw new Exception("Selecione pelo menos uma entrada de dados.");
+
+            
         }
 
         List<Movimento> movsProcessados;
@@ -77,7 +94,13 @@ namespace ImportadorContaMovimentacao
                 if (String.IsNullOrEmpty(pathTB.Text))
                     throw new Exception("Selecione um caminho válido.");
 
-                movsProcessados = ProcessarPlanilha.ProcessarMovimentos(pathTB.Text);
+                if (planCheck.Checked)
+                    movsProcessados = Processar.ProcessarPlanilha(pathTB.Text);
+                else if (xmlCheck.Checked)
+                    movsProcessados = Processar.ProcessarXML(pathTB.Text);
+                else
+                    throw new Exception("Selecione pelo menos uma entrada de dados.");
+
                 movGridView.DataSource = movsProcessados;
                 Program.MovGridViewConfig(movGridView);
                 MostrarElementosGrid();
@@ -330,6 +353,18 @@ namespace ImportadorContaMovimentacao
         private void ProcessarBTTN_Click(object sender, EventArgs e)
         {
             GerarResultado.ProcessarMovimentos(movsProcessados);
+        }
+
+        private void xmlCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (xmlCheck.Checked)
+                planCheck.Checked = false;
+        }
+
+        private void planCheck_CheckedChanged(object sender, EventArgs e)
+        {
+            if (planCheck.Checked)
+                xmlCheck.Checked = false;
         }
     }
     class CelulaAlterada
