@@ -352,7 +352,8 @@ namespace ImportadorContaMovimentacao
 
         private void ProcessarBTTN_Click(object sender, EventArgs e)
         {
-            GerarResultado.ProcessarMovimentos(movsProcessados);
+            var gr = new GerarResultado();
+            gr.ProcessarMovimentos(movsProcessados);
         }
 
         private void xmlCheck_CheckedChanged(object sender, EventArgs e)
