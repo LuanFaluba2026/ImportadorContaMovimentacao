@@ -6,7 +6,7 @@ namespace ImportadorContaMovimentacao.Forms
 {
     public partial class ImportadorPlanContas : Form
     {
-        const string PreConfigDB = @"P:\Fiscal\Arquivos de Apoio\5 - Importador NF-e X Mov. Contas\PreConfig.DB\XXX_SeniorDataBase_S.sqlite";
+        const string PreConfigDB = @"P:\Fiscal\Arquivos de Apoio\5 - APP Conversor XML - Movimentação de Contas\PreConfig.DB\XXX_SeniorDataBase_S.sqlite";
 
         string path = "";
         string selected = GerenciarEmpresas.selected;
