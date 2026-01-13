@@ -1,5 +1,9 @@
 # Conversor XML - Movimentação de Contas
 Projeto desenvolvido para facilitar e automatizar a importação contábil nos sistemas Domínio e Sênior, permitindo o uso de planilhas ou arquivos XML como fonte de dados.
+### Tecnologias utilizadas:
+- Banco de Dados com SQLite.
+- ClosedXML para leitura e geração de planilhas.
+- Windows Forms / .NET
 ### Funcionalidades: 
 - Importação e duplicação do plano de contas contábeis de ambos sistemas.
 - Conversão de XML para documento .xlsx/.csv no layout correto para importação.
